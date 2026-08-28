@@ -119,7 +119,7 @@ export function HomePage() {
               }
             })
           },
-          { threshold: 0.12 },
+          { rootMargin: '0px 0px -6% 0px', threshold: 0.06 },
         )
 
     revealItems.forEach((item) => observer?.observe(item))
