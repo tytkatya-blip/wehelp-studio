@@ -133,8 +133,6 @@ export function HomePage() {
     <div className="home">
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__field" aria-hidden="true">
-          <span className="hero__blob hero__blob--coral" />
-          <span className="hero__blob hero__blob--violet" />
           <span className="hero__grain" />
         </div>
         <div className="section-inner hero__inner">
