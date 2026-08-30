@@ -140,8 +140,9 @@ body {
 }
 
 .site-footer {
-  border-top: 1px solid var(--color-border);
-  background: var(--color-background);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  background: #000000;
+  color: #ffffff;
 }
 
 .site-footer__inner {
@@ -163,7 +164,7 @@ body {
 
 .site-footer__inner > p {
   justify-self: end;
-  color: var(--color-text-secondary);
+  color: #ffffff;
 }
 
 .site-footer a:hover {
@@ -362,12 +363,27 @@ body {
   padding-block: var(--space-8) var(--space-12);
 }
 
-.problem__number,
 .capability > span {
   color: var(--color-text-secondary);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.09em;
+}
+
+.problem__number {
+  width: 24px;
+  height: 24px;
+  margin-top: clamp(0.25rem, 0.9vw, 1.125rem);
+  border-radius: 50%;
+  background: #eb5321;
+}
+
+.problem:first-child .problem__number {
+  background: #fd9518;
+}
+
+.problem:last-child .problem__number {
+  background: #c11a13;
 }
 
 .problem h3 {
@@ -465,23 +481,23 @@ body {
 }
 
 .outcome--operate .outcome-icon__dot--top-right {
-  --dot-x: -17px;
-  --dot-y: 2px;
+  --dot-x: -59px;
+  --dot-y: 0px;
 }
 
 .outcome--operate .outcome-icon__dot--bottom-right {
-  --dot-x: -2px;
-  --dot-y: -15px;
+  --dot-x: -4px;
+  --dot-y: 19px;
 }
 
 .outcome--operate .outcome-icon__dot--bottom-left {
   --dot-x: 17px;
-  --dot-y: -2px;
+  --dot-y: -4px;
 }
 
 .outcome--operate .outcome-icon__dot--top-left {
-  --dot-x: 2px;
-  --dot-y: 15px;
+  --dot-x: 38px;
+  --dot-y: 0px;
 }
 
 .outcome.is-icon-settled .outcome-icon__dot {
@@ -739,7 +755,7 @@ body {
 }
 
 .why {
-  background: var(--color-coral-surface);
+  background: var(--color-surface);
   color: #29140f;
 }
 
@@ -805,12 +821,19 @@ body {
 .contact {
   min-height: 52rem;
   overflow: hidden;
-  background: #a79ad9;
+  background: var(--color-background);
+}
+
+.contact__field::before {
+  position: absolute;
+  inset: -32%;
+  background: url('../../assets/images/hero-image.avif') center / cover no-repeat;
+  content: '';
+  transform: scale(1.1);
 }
 
 .contact__field span {
-  position: absolute;
-  border-radius: 50% 38% 55% 45% / 43% 55% 45% 57%;
+  display: none;
 }
 
 .contact__field span:first-child {

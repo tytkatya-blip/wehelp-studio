@@ -71,10 +71,10 @@ function OutcomeIcon({ name }: { name: OutcomeIconName }) {
 
   return (
     <svg className="outcome__icon" viewBox="0 0 100 96" aria-hidden="true">
-      <circle className="outcome-icon__dot outcome-icon__dot--bottom-left" cx="14" cy="69" r="12" fill="white" fillOpacity="0.9" />
-      <circle className="outcome-icon__dot outcome-icon__dot--top-left" cx="29" cy="14" r="12" fill="white" fillOpacity="0.32" />
-      <circle className="outcome-icon__dot outcome-icon__dot--bottom-right" cx="71" cy="82" r="12" fill="white" fillOpacity="0.32" />
-      <circle className="outcome-icon__dot outcome-icon__dot--top-right" cx="86" cy="27" r="12" fill="white" fillOpacity="0.9" />
+      <circle className="outcome-icon__dot outcome-icon__dot--bottom-left" cx="12" cy="69" r="12" fill="white" fillOpacity="0.9" />
+      <circle className="outcome-icon__dot outcome-icon__dot--top-right" cx="88" cy="27" r="12" fill="white" fillOpacity="0.32" />
+      <circle className="outcome-icon__dot outcome-icon__dot--bottom-right" cx="71" cy="46" r="12" fill="white" fillOpacity="0.32" />
+      <circle className="outcome-icon__dot outcome-icon__dot--top-left" cx="29" cy="27" r="12" fill="white" fillOpacity="0.9" />
     </svg>
   )
 }
@@ -345,9 +345,9 @@ export function HomePage() {
             <h2 id="problems-title">Some problems cost more than they look.</h2>
           </header>
           <div className="problems__list">
-            {problems.map((problem, index) => (
+            {problems.map((problem) => (
               <article className="problem" data-reveal key={problem.title}>
-                <span className="problem__number">0{index + 1}</span>
+                <span className="problem__number" aria-hidden="true" />
                 <div>
                   <h3>{problem.title}</h3>
                   <p>{problem.body}</p>
