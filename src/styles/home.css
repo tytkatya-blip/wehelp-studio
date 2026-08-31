@@ -984,7 +984,12 @@ body {
   }
 
   .process__step {
-    grid-template-columns: 4.5rem 1fr;
+    grid-template-columns: 3.5rem 1fr;
+  }
+
+  .process__number {
+    width: 3.5rem;
+    height: 3.5rem;
   }
 
   .capability {

@@ -149,6 +149,7 @@ export function HomePage() {
     const processSection = document.querySelector<HTMLElement>('.process-section')
     const processSteps = Array.from(document.querySelectorAll<HTMLElement>('.process__step'))
     const desktopProcess = window.matchMedia('(min-width: 68.001rem)')
+    const mobileOutcomes = window.matchMedia('(max-width: 48rem)')
     const animationTimers: number[] = []
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
@@ -168,24 +169,43 @@ export function HomePage() {
 
     revealItems.forEach((item) => observer?.observe(item))
 
-    const outcomeObserver = reducedMotion
-      ? null
-      : new IntersectionObserver(
-          ([entry]) => {
-            if (!entry?.isIntersecting) return
+    let outcomeObserver: IntersectionObserver | null = null
 
-            outcomeCards.forEach((card, index) => {
-              animationTimers.push(
-                window.setTimeout(() => card.classList.add('is-icon-settled'), (index + 3) * 1000),
-              )
-            })
-            outcomeObserver?.disconnect()
-          },
-          { threshold: 0.12 },
-        )
+    if (!reducedMotion && mobileOutcomes.matches) {
+      outcomeObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+
+            const card = entry.target as HTMLElement
+            outcomeObserver?.unobserve(card)
+            animationTimers.push(
+              window.setTimeout(() => card.classList.add('is-icon-settled'), 500),
+            )
+          })
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.2 },
+      )
+    } else if (!reducedMotion) {
+      outcomeObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return
+
+          outcomeCards.forEach((card, index) => {
+            animationTimers.push(
+              window.setTimeout(() => card.classList.add('is-icon-settled'), (index + 3) * 1000),
+            )
+          })
+          outcomeObserver?.disconnect()
+        },
+        { threshold: 0.12 },
+      )
+    }
 
     if (reducedMotion) {
       outcomeCards.forEach((card) => card.classList.add('is-icon-settled'))
+    } else if (mobileOutcomes.matches) {
+      outcomeCards.forEach((card) => outcomeObserver?.observe(card))
     } else if (outcomeSystem) {
       outcomeObserver?.observe(outcomeSystem)
     }
