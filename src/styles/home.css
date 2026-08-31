@@ -642,9 +642,9 @@ body {
   font-size: 1.05rem;
 }
 
-@media (min-width: 48.001rem) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 68.001rem) and (prefers-reduced-motion: no-preference) {
   .process-section {
-    height: 425vh;
+    height: 650vh;
     padding-block: 0;
   }
 
@@ -653,21 +653,22 @@ body {
     top: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-    padding-top: clamp(6.5rem, 12vw, 11.5rem);
-    padding-bottom: clamp(2.5rem, 5vh, 4rem);
+    height: 100svh;
+    overflow: visible;
+    padding-top: clamp(10rem, 16vh, 11.75rem);
+    padding-bottom: clamp(2.5rem, 4vh, 4rem);
   }
 
   .process-section__heading {
     flex: none;
-    margin-bottom: clamp(6rem, 12vw, 12rem);
+    margin-bottom: clamp(9.25rem, 16vh, 11.25rem);
   }
 
   .process {
     position: relative;
     flex: 1;
-    overflow: hidden;
+    min-height: 9rem;
+    overflow: visible;
   }
 
   .process__step {

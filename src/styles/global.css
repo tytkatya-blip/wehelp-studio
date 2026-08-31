@@ -4,6 +4,12 @@ body {
   font-family: var(--font-family-sans);
   font-size: 1rem;
   line-height: 1.5;
+  overscroll-behavior-y: none;
+}
+
+html {
+  background: #000000;
+  overscroll-behavior-y: none;
 }
 
 #root,

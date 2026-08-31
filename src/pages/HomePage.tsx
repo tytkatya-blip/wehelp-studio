@@ -148,7 +148,7 @@ export function HomePage() {
     const outcomeCards = Array.from(document.querySelectorAll<HTMLElement>('.outcome'))
     const processSection = document.querySelector<HTMLElement>('.process-section')
     const processSteps = Array.from(document.querySelectorAll<HTMLElement>('.process__step'))
-    const desktopProcess = window.matchMedia('(min-width: 48.001rem)')
+    const desktopProcess = window.matchMedia('(min-width: 68.001rem)')
     const animationTimers: number[] = []
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
@@ -249,17 +249,22 @@ export function HomePage() {
       }
 
       const rect = processSection.getBoundingClientRect()
-      const scrollDistance = Math.max(1, processSection.offsetHeight - window.innerHeight)
+      // Finish the sequence one viewport before the sticky section releases so
+      // the final step remains fully visible before the next section enters.
+      const scrollDistance = Math.max(1, processSection.offsetHeight - window.innerHeight * 2)
       const progress = Math.min(1, Math.max(0, -rect.top / scrollDistance))
       const stepProgress = progress * processSteps.length
       const transitionIndex = Math.min(processSteps.length, Math.floor(stepProgress))
       const phase = transitionIndex === processSteps.length ? 1 : stepProgress - transitionIndex
       const activeIndex = transitionIndex - 1
       const incomingIndex = transitionIndex
-      const currentFade = Math.min(1, phase / 0.55)
-      const nextEntry = Math.min(1, Math.max(0, (phase - 0.18) / 0.82))
-      const nextFade = Math.min(1, Math.max(0, (phase - 0.18) / 0.32))
-      const easedEntry = 1 - Math.pow(1 - nextEntry, 3)
+      const transitionStart = transitionIndex === 0 ? 0.04 : 0.2
+      const transitionProgress = Math.min(1, Math.max(0, (phase - transitionStart) / 0.66))
+      const easedTransition =
+        transitionProgress * transitionProgress * (3 - 2 * transitionProgress)
+      const currentFade = easedTransition
+      const nextFade = easedTransition
+      const easedEntry = easedTransition
 
       processSteps.forEach((step, index) => {
         if (transitionIndex === processSteps.length) {
@@ -276,10 +281,10 @@ export function HomePage() {
           step.style.transform = `translateY(${-8 * currentFade}%)`
         } else if (index === incomingIndex) {
           step.style.opacity = String(nextFade)
-          step.style.transform = `translateY(${110 * (1 - easedEntry)}%)`
+          step.style.transform = `translateY(${70 * (1 - easedEntry)}%)`
         } else {
           step.style.opacity = '0'
-          step.style.transform = 'translateY(110%)'
+          step.style.transform = 'translateY(70%)'
         }
       })
     }
@@ -388,8 +393,7 @@ export function HomePage() {
           <header className="section-heading process-section__heading" data-reveal>
             <div>
               <h2 id="process-title">
-                We don&apos;t start with technology.
-                <span>We start with the problem.</span>
+                We start with the problem, not the technology.
               </h2>
             </div>
             <p className="process-section__shift" aria-hidden="true">
