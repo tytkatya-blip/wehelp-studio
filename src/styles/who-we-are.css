@@ -52,7 +52,6 @@
   max-width: 13ch;
   font-size: clamp(3.5rem, 7.5vw, 7.75rem);
   font-weight: 550;
-  letter-spacing: -0.07em;
   line-height: 0.95;
 }
 

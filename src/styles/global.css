@@ -7,6 +7,14 @@ body {
   overscroll-behavior-y: none;
 }
 
+h2 {
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  letter-spacing: -0.02em;
+}
+
 html {
   background: #000000;
   overscroll-behavior-y: none;
