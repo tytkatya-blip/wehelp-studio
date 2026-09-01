@@ -140,15 +140,40 @@ const principles = [
   ['Production minded', "A recommendation that never gets used isn't a solution."],
 ]
 
+const heroTools = [
+  'Automation & Integration',
+  'AI',
+  'Product & Interface design',
+  'Custom Software',
+  'Backend & Data',
+]
+
+const team = [
+  {
+    name: 'Alex Morgan',
+    role: 'Strategy & Operations',
+    image: new URL('../../assets/images/team-01.webp', import.meta.url).href,
+  },
+  {
+    name: 'Daniel Reed',
+    role: 'Product & Technology',
+    image: new URL('../../assets/images/team-03.webp', import.meta.url).href,
+  },
+  {
+    name: 'Maya Collins',
+    role: 'Design & Research',
+    image: new URL('../../assets/images/team-02.webp', import.meta.url).href,
+  },
+]
+
 export function HomePage() {
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
     const outcomeSystem = document.querySelector<HTMLElement>('.outcomes__system')
     const outcomeCards = Array.from(document.querySelectorAll<HTMLElement>('.outcome'))
-    const processSection = document.querySelector<HTMLElement>('.process-section')
+    const processList = document.querySelector<HTMLOListElement>('.process')
     const processSteps = Array.from(document.querySelectorAll<HTMLElement>('.process__step'))
-    const desktopProcess = window.matchMedia('(min-width: 68.001rem)')
     const mobileOutcomes = window.matchMedia('(max-width: 48rem)')
     const animationTimers: number[] = []
     const hoverTimers = new Map<HTMLElement, number>()
@@ -257,67 +282,40 @@ export function HomePage() {
     }
 
     let processFrame = 0
-    const updateProcess = () => {
+    const updateProcessProgress = () => {
       processFrame = 0
-      if (!processSection) return
-      if (reducedMotion || !desktopProcess.matches) {
-        processSteps.forEach((step) => {
-          step.style.removeProperty('opacity')
-          step.style.removeProperty('transform')
-        })
-        return
-      }
+      if (!processList || processSteps.length === 0) return
 
-      const rect = processSection.getBoundingClientRect()
-      // Finish the sequence one viewport before the sticky section releases so
-      // the final step remains fully visible before the next section enters.
-      const scrollDistance = Math.max(1, processSection.offsetHeight - window.innerHeight * 2)
-      const progress = Math.min(1, Math.max(0, -rect.top / scrollDistance))
-      const stepProgress = progress * processSteps.length
-      const transitionIndex = Math.min(processSteps.length, Math.floor(stepProgress))
-      const phase = transitionIndex === processSteps.length ? 1 : stepProgress - transitionIndex
-      const activeIndex = transitionIndex - 1
-      const incomingIndex = transitionIndex
-      const transitionStart = transitionIndex === 0 ? 0.04 : 0.2
-      const transitionProgress = Math.min(1, Math.max(0, (phase - transitionStart) / 0.66))
-      const easedTransition =
-        transitionProgress * transitionProgress * (3 - 2 * transitionProgress)
-      const currentFade = easedTransition
-      const nextFade = easedTransition
-      const easedEntry = easedTransition
+      const listRect = processList.getBoundingClientRect()
+      const marker = window.innerHeight * 0.55
+      const centers = processSteps.map((step) => {
+        const number = step.querySelector<HTMLElement>('.process__number')
+        if (!number) return 0
+        const numberRect = number.getBoundingClientRect()
+        return numberRect.top - listRect.top + numberRect.height / 2
+      })
+      const firstCenter = centers[0]
+      const lastCenter = centers.at(-1) ?? firstCenter
+      const markerInList = marker - listRect.top
+      const progress = Math.min(lastCenter, Math.max(firstCenter, markerInList))
+
+      processList.style.setProperty('--process-line-top', `${firstCenter}px`)
+      processList.style.setProperty('--process-line-height', `${lastCenter - firstCenter}px`)
+      processList.style.setProperty('--process-progress', `${progress - firstCenter}px`)
 
       processSteps.forEach((step, index) => {
-        if (transitionIndex === processSteps.length) {
-          step.style.opacity = index === processSteps.length - 1 ? '1' : '0'
-          step.style.transform = index === processSteps.length - 1 ? 'translateY(0)' : 'translateY(-8%)'
-          return
-        }
-
-        if (index < activeIndex) {
-          step.style.opacity = '0'
-          step.style.transform = 'translateY(-8%)'
-        } else if (index === activeIndex) {
-          step.style.opacity = String(1 - currentFade)
-          step.style.transform = `translateY(${-8 * currentFade}%)`
-        } else if (index === incomingIndex) {
-          step.style.opacity = String(nextFade)
-          step.style.transform = `translateY(${70 * (1 - easedEntry)}%)`
-        } else {
-          step.style.opacity = '0'
-          step.style.transform = 'translateY(70%)'
-        }
+        step.classList.toggle('is-active', index === 0 || centers[index] <= markerInList)
       })
     }
 
-    const scheduleProcessUpdate = () => {
+    const scheduleProcessProgress = () => {
       if (processFrame) return
-      processFrame = window.requestAnimationFrame(updateProcess)
+      processFrame = window.requestAnimationFrame(updateProcessProgress)
     }
 
-    updateProcess()
-    window.addEventListener('scroll', scheduleProcessUpdate, { passive: true })
-    window.addEventListener('resize', scheduleProcessUpdate)
-    desktopProcess.addEventListener('change', scheduleProcessUpdate)
+    updateProcessProgress()
+    window.addEventListener('scroll', scheduleProcessProgress, { passive: true })
+    window.addEventListener('resize', scheduleProcessProgress)
 
     return () => {
       observer?.disconnect()
@@ -329,9 +327,8 @@ export function HomePage() {
         card.removeEventListener('mouseenter', scheduleReplay)
         card.removeEventListener('mouseleave', cancelScheduledReplay)
       })
-      window.removeEventListener('scroll', scheduleProcessUpdate)
-      window.removeEventListener('resize', scheduleProcessUpdate)
-      desktopProcess.removeEventListener('change', scheduleProcessUpdate)
+      window.removeEventListener('scroll', scheduleProcessProgress)
+      window.removeEventListener('resize', scheduleProcessProgress)
       if (processFrame) window.cancelAnimationFrame(processFrame)
     }
   }, [])
@@ -343,30 +340,66 @@ export function HomePage() {
           <span className="hero__grain" />
         </div>
         <div className="section-inner hero__inner">
-          <h1 id="hero-title" className="hero__title">
-            <span>Make more.</span>
-            <span>Waste less.</span>
-          </h1>
-          <div className="hero__support">
-            <p className="hero__lead">
-              We find expensive problems in your business and solve them with the right technology.
-            </p>
-            <a className="text-cta text-cta--solid" href="#contact">
-              Discuss an expensive problem
-            </a>
-            <p className="hero__note">
-              Software, automation, AI, integrations — or an existing tool, when that makes more sense.
-            </p>
+          <div className="hero__content">
+            <h1 id="hero-title" className="hero__title">
+              <span>Make more.</span>
+              <span>Waste less.</span>
+            </h1>
+            <div className="hero__support">
+              <p className="hero__lead">
+                We find expensive problems in your business and solve them with the right technology.
+              </p>
+              <a className="text-cta text-cta--solid hero__cta" href="#contact">
+                Discuss a problem
+              </a>
+            </div>
+          </div>
+          <ul className="hero__tools" aria-label="Our technology capabilities">
+            {heroTools.map((tool) => (
+              <li className="hero-tool" key={tool}>
+                <span>{tool}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section home-about" aria-labelledby="home-about-title">
+        <div className="section-inner">
+          <div className="home-about__intro" data-reveal>
+            <div>
+              <p className="section-eyebrow">Who we are</p>
+              <h2 id="home-about-title">We help businesses work better.</h2>
+            </div>
+            <div className="home-about__copy">
+              <p>
+                <strong>Wehelp.studio</strong> is a small technology &amp; operations studio. We work
+                with companies that want to make more, waste less, or operate more efficiently.
+              </p>
+              <p>
+                We start by understanding how the business actually works — the people, processes,
+                tools and data behind it. Then we find the problem worth solving and take the right
+                solution into production.
+              </p>
+            </div>
+          </div>
+
+          <div className="home-about__team">
+            {team.map((person) => (
+              <article className="team-card" data-reveal key={person.name}>
+                <img src={person.image} alt={`${person.name}, ${person.role}`} />
+                <h3>{person.name}</h3>
+                <p>{person.role}</p>
+              </article>
+            ))}
           </div>
         </div>
-        <p className="hero__signal" aria-hidden="true">
-          problem <span>→</span> intervention <span>→</span> impact
-        </p>
       </section>
 
       <section className="section problems" aria-labelledby="problems-title">
         <div className="section-inner problems__layout">
           <header className="section-heading problems__heading" data-reveal>
+            <p className="section-eyebrow">Problems worth fixing</p>
             <h2 id="problems-title">Some problems cost more than they look.</h2>
           </header>
           <div className="problems__list">
@@ -386,6 +419,7 @@ export function HomePage() {
       <section className="section outcomes" aria-labelledby="outcomes-title">
         <div className="section-inner">
           <header className="section-heading outcomes__heading" data-reveal>
+            <p className="section-eyebrow">What changes</p>
             <h2 id="outcomes-title">Better technology should change the economics of the work.</h2>
           </header>
           <div className="outcomes__system">
@@ -412,6 +446,7 @@ export function HomePage() {
         <div className="section-inner">
           <header className="section-heading process-section__heading" data-reveal>
             <div>
+              <p className="section-eyebrow">How we work</p>
               <h2 id="process-title">
                 We start with the problem, not the technology.
               </h2>
@@ -422,7 +457,7 @@ export function HomePage() {
           </header>
           <ol className="process">
             {process.map((step, index) => (
-              <li className="process__step" key={step.title}>
+              <li className="process__step" data-reveal key={step.title}>
                 <span className="process__number">{String(index + 1).padStart(2, '0')}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
@@ -435,10 +470,13 @@ export function HomePage() {
       <section className="section tools" aria-labelledby="tools-title">
         <div className="section-inner">
           <header className="section-heading tools__heading" data-reveal>
-            <h2 id="tools-title">
-              Sometimes the answer is custom software.
-              <span>Sometimes it isn&apos;t.</span>
-            </h2>
+            <div>
+              <p className="section-eyebrow">The right tool</p>
+              <h2 id="tools-title">
+                Sometimes the answer is custom software.
+                <span>Sometimes it isn&apos;t.</span>
+              </h2>
+            </div>
             <p>We use whatever solves the problem best.</p>
           </header>
           <div className="capabilities">
@@ -460,11 +498,14 @@ export function HomePage() {
       <section className="section why" aria-labelledby="why-title">
         <div className="section-inner">
           <div className="why__intro" data-reveal>
-            <h2 id="why-title">
-              Small team.
-              <span>Close to the problem.</span>
-              <span>Responsible for the result.</span>
-            </h2>
+            <div>
+              <p className="section-eyebrow">Why Wehelp</p>
+              <h2 id="why-title">
+                Small team.
+                <span>Close to the problem.</span>
+                <span>Responsible for the result.</span>
+              </h2>
+            </div>
             <p>
               We work directly with the people who understand the problem and the people who will use
               the solution. The same team can investigate the workflow, design the fix and take it into
