@@ -8,8 +8,8 @@ export function SiteFooter() {
           wehelp.studio
         </NavLink>
         <nav className="site-footer__nav" aria-label="Footer navigation">
-          <NavLink to="/who-we-are">Who we are</NavLink>
-          <NavLink to="/cases">Cases</NavLink>
+          <a href="/#who-we-are">Who we are</a>
+          <a href="/#testimonials">Testimonials</a>
         </nav>
         <p>© {new Date().getFullYear()} wehelp.studio</p>
       </div>

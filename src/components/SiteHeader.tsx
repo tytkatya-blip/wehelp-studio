@@ -1,8 +1,4 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
-
-const getNavLinkClassName = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'site-header__link site-header__link--active' : 'site-header__link'
 
 const languages = [
   {
@@ -63,26 +59,35 @@ export function SiteHeader() {
             <span />
           </button>
 
-          <NavLink
+          <a
             className="site-header__logo"
-            to="/"
+            href="/"
             aria-label="wehelp.studio home"
             onClick={closeMenu}
           >
             wehelp.studio
-          </NavLink>
+          </a>
 
           <nav
             className={`site-header__nav${isMenuOpen ? ' site-header__nav--open' : ''}`}
             id="main-navigation"
             aria-label="Main navigation"
           >
-            <NavLink className={getNavLinkClassName} to="/who-we-are" onClick={closeMenu}>
+            <a className="site-header__link" href="/#who-we-are" onClick={closeMenu}>
               Who we are
-            </NavLink>
-            <NavLink className={getNavLinkClassName} to="/cases" onClick={closeMenu}>
-              Cases
-            </NavLink>
+            </a>
+            <a className="site-header__link" href="/#problems" onClick={closeMenu}>
+              Problems
+            </a>
+            <a className="site-header__link" href="/#what-we-do" onClick={closeMenu}>
+              What we do
+            </a>
+            <a className="site-header__link" href="/#tools" onClick={closeMenu}>
+              Tools
+            </a>
+            <a className="site-header__link" href="/#testimonials" onClick={closeMenu}>
+              Testimonials
+            </a>
           </nav>
 
           <a className="site-header__cta" href="/#contact" onClick={closeMenu}>

@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 
 const problems = [
   {
@@ -39,7 +38,7 @@ const outcomes = [
     title: ['Operate', 'better'],
     icon: 'operate',
     lines: [
-      'Handle more without growing the team at the same rate.',
+      'Handle more without growing the team.',
       'Move faster.',
       'See what is happening.',
     ],
@@ -166,7 +165,51 @@ const team = [
   },
 ]
 
+const testimonials = [
+  {
+    quote:
+      'Wehelp took the time to understand how our business actually works before proposing a solution. The process felt thoughtful, practical and focused on what would create the most value.',
+    name: 'Tim Fiebach',
+    role: 'Founder Top-IT-Service, IT-Administrator',
+  },
+  {
+    quote:
+      'They translated a complicated workflow into something clear, useful and realistic. We always understood what was being built, why it mattered and what would change for the team.',
+    name: 'Tim Fiebach',
+    role: 'Founder Top-IT-Service, IT-Administrator',
+  },
+  {
+    quote:
+      'The result was not technology for its own sake. It removed friction from the daily work and gave us a solution the team could confidently use from day one.',
+    name: 'Tim Fiebach',
+    role: 'Founder Top-IT-Service, IT-Administrator',
+  },
+]
+
+const testimonialImage = new URL('../../assets/images/client-tim.webp', import.meta.url).href
+
 export function HomePage() {
+  const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const testimonialTrackRef = useRef<HTMLDivElement>(null)
+
+  const showTestimonial = (index: number) => {
+    const track = testimonialTrackRef.current
+    const card = track?.children[index] as HTMLElement | undefined
+
+    card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    setActiveTestimonial(index)
+  }
+
+  const updateActiveTestimonial = () => {
+    const track = testimonialTrackRef.current
+    const firstCard = track?.firstElementChild as HTMLElement | null
+    if (!track || !firstCard) return
+
+    const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0
+    const index = Math.round(track.scrollLeft / (firstCard.offsetWidth + gap))
+    setActiveTestimonial(Math.min(testimonials.length - 1, Math.max(0, index)))
+  }
+
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
@@ -364,12 +407,16 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section home-about" aria-labelledby="home-about-title">
+      <section className="section home-about" id="who-we-are" aria-labelledby="home-about-title">
         <div className="section-inner">
           <div className="home-about__intro" data-reveal>
-            <div>
+            <div className="section-heading">
               <p className="section-eyebrow">Who we are</p>
-              <h2 id="home-about-title">We help businesses work better.</h2>
+              <h2 id="home-about-title">
+                We help businesses
+                <br />
+                work better.
+              </h2>
             </div>
             <div className="home-about__copy">
               <p>
@@ -396,7 +443,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section problems" aria-labelledby="problems-title">
+      <section className="section problems" id="problems" aria-labelledby="problems-title">
         <div className="section-inner problems__layout">
           <header className="section-heading problems__heading" data-reveal>
             <p className="section-eyebrow">Problems worth fixing</p>
@@ -442,11 +489,11 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section process-section" aria-labelledby="process-title">
+      <section className="section process-section" id="what-we-do" aria-labelledby="process-title">
         <div className="section-inner">
           <header className="section-heading process-section__heading" data-reveal>
             <div>
-              <p className="section-eyebrow">How we work</p>
+              <p className="section-eyebrow">What we do</p>
               <h2 id="process-title">
                 We start with the problem, not the technology.
               </h2>
@@ -467,7 +514,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section tools" aria-labelledby="tools-title">
+      <section className="section tools" id="tools" aria-labelledby="tools-title">
         <div className="section-inner">
           <header className="section-heading tools__heading" data-reveal>
             <div>
@@ -495,11 +542,62 @@ export function HomePage() {
         </div>
       </section>
 
+      <section className="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
+        <div className="section-inner testimonials__heading section-heading" data-reveal>
+          <p className="section-eyebrow">In their words</p>
+          <h2 id="testimonials-title">What it&apos;s like to work with us</h2>
+        </div>
+
+        <div className="testimonials__carousel" data-reveal>
+          <div
+            className="testimonials__track"
+            ref={testimonialTrackRef}
+            onScroll={updateActiveTestimonial}
+          >
+            {testimonials.map((testimonial, index) => (
+              <article
+                className="testimonial-card"
+                id={`testimonial-${index + 1}`}
+                key={`${testimonial.name}-${index}`}
+              >
+                <img
+                  className="testimonial-card__image"
+                  src={testimonialImage}
+                  alt={testimonial.name}
+                  width="180"
+                  height="180"
+                />
+                <blockquote>
+                  <p>“{testimonial.quote}”</p>
+                  <footer>
+                    <cite>{testimonial.name}</cite>
+                    <span>{testimonial.role}</span>
+                  </footer>
+                </blockquote>
+              </article>
+            ))}
+          </div>
+
+          <div className="testimonials__pagination" aria-label="Choose a testimonial">
+            {testimonials.map((testimonial, index) => (
+              <button
+                type="button"
+                className={index === activeTestimonial ? 'is-active' : ''}
+                aria-label={`Show testimonial from ${testimonial.name}, slide ${index + 1}`}
+                aria-current={index === activeTestimonial ? 'true' : undefined}
+                onClick={() => showTestimonial(index)}
+                key={index}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section why" aria-labelledby="why-title">
         <div className="section-inner">
           <div className="why__intro" data-reveal>
-            <div>
-              <p className="section-eyebrow">Why Wehelp</p>
+            <div className="section-heading">
+              <p className="section-eyebrow">Why wehelp.studio</p>
               <h2 id="why-title">
                 Small team.
                 <span>Close to the problem.</span>
@@ -520,30 +618,16 @@ export function HomePage() {
               </article>
             ))}
           </div>
-          <Link className="case-link" to="/cases" data-reveal>
-            See how we work in practice <span aria-hidden="true">→</span> Cases
-          </Link>
         </div>
       </section>
 
       <section className="section contact" id="contact" aria-labelledby="contact-title">
-        <div className="contact__field" aria-hidden="true">
-          <span />
-          <span />
-        </div>
+        <div className="contact__field" aria-hidden="true" />
         <div className="section-inner contact__inner" data-reveal>
-          <h2 id="contact-title">There may be an expensive problem hiding in your operations.</h2>
-          <p className="contact__copy">
-            Tell us what is happening. We&apos;ll help you figure out whether it&apos;s worth fixing.
-          </p>
-          <div className="contact__actions">
-            <a className="text-cta text-cta--solid" href="mailto:hello@wehelp.studio">
-              Let&apos;s discuss
-            </a>
-            <a className="text-link" href="mailto:hello@wehelp.studio">
-              Show us your workflow <span aria-hidden="true">→</span>
-            </a>
-          </div>
+          <h2 id="contact-title">
+            There may be an expensive problem hiding in your operations.{' '}
+            <a href="mailto:hello@wehelp.studio">Reach us for a discussion.</a>
+          </h2>
         </div>
       </section>
     </div>
