@@ -811,7 +811,6 @@ body {
 
 .process-section__heading {
   display: grid;
-  grid-template-columns: 1fr auto;
   align-items: end;
   gap: var(--space-12);
   margin-bottom: clamp(6rem, 12vw, 12rem);
@@ -819,21 +818,6 @@ body {
 
 .process-section__heading h2 {
   max-width: 14ch;
-}
-
-.process-section__shift {
-  display: flex;
-  gap: var(--space-3);
-  padding-bottom: var(--space-3);
-  color: var(--color-text-secondary);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-.process-section__shift span {
-  color: var(--color-coral);
 }
 
 .process {

@@ -498,9 +498,6 @@ export function HomePage() {
                 We start with the problem, not the technology.
               </h2>
             </div>
-            <p className="process-section__shift" aria-hidden="true">
-              complexity <span>→</span> clarity
-            </p>
           </header>
           <ol className="process">
             {process.map((step, index) => (
