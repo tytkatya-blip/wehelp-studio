@@ -188,6 +188,25 @@ const testimonials = [
 
 const testimonialImage = new URL('../../assets/images/client-tim.webp', import.meta.url).href
 
+function TypingLine({ text, accent = false }: { text: string; accent?: boolean }) {
+  return (
+    <span
+      className={`tools__statement-line${accent ? ' tools__statement-line--accent' : ''}`}
+      aria-hidden="true"
+    >
+      {text.split(' ').map((word, wordIndex) => (
+        <span className="tools__statement-word" key={`${word}-${wordIndex}`}>
+          {Array.from(word).map((character, characterIndex) => (
+            <span className="tools__statement-char" key={`${character}-${characterIndex}`}>
+              {character}
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  )
+}
+
 export function HomePage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const testimonialTrackRef = useRef<HTMLDivElement>(null)
@@ -195,8 +214,12 @@ export function HomePage() {
   const showTestimonial = (index: number) => {
     const track = testimonialTrackRef.current
     const card = track?.children[index] as HTMLElement | undefined
+    if (!track || !card) return
 
-    card?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    const centeredScrollPosition =
+      card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2
+
+    track.scrollTo({ left: centeredScrollPosition, behavior: 'smooth' })
     setActiveTestimonial(index)
   }
 
@@ -212,13 +235,23 @@ export function HomePage() {
 
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const revealItems = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
-    const outcomeSystem = document.querySelector<HTMLElement>('.outcomes__system')
+    const revealItems = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-scroll-typing])'),
+    )
     const outcomeCards = Array.from(document.querySelectorAll<HTMLElement>('.outcome'))
     const processList = document.querySelector<HTMLOListElement>('.process')
     const processSteps = Array.from(document.querySelectorAll<HTMLElement>('.process__step'))
-    const mobileOutcomes = window.matchMedia('(max-width: 48rem)')
-    const animationTimers: number[] = []
+    const typingStatement = document.querySelector<HTMLElement>('[data-scroll-typing]')
+    const typingCharacters = Array.from(
+      typingStatement?.querySelectorAll<HTMLElement>('.tools__statement-char') ?? [],
+    )
+    const accentFirstCharacter = typingStatement?.querySelector<HTMLElement>(
+      '.tools__statement-line--accent .tools__statement-char',
+    )
+    const accentStartIndex = accentFirstCharacter
+      ? typingCharacters.indexOf(accentFirstCharacter)
+      : -1
+    const statementFlair = document.querySelector<HTMLElement>('[data-statement-flair]')
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
     const observer = reducedMotion
@@ -236,47 +269,6 @@ export function HomePage() {
         )
 
     revealItems.forEach((item) => observer?.observe(item))
-
-    let outcomeObserver: IntersectionObserver | null = null
-
-    if (!reducedMotion && mobileOutcomes.matches) {
-      outcomeObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return
-
-            const card = entry.target as HTMLElement
-            outcomeObserver?.unobserve(card)
-            animationTimers.push(
-              window.setTimeout(() => card.classList.add('is-icon-settled'), 500),
-            )
-          })
-        },
-        { rootMargin: '0px 0px -8% 0px', threshold: 0.2 },
-      )
-    } else if (!reducedMotion) {
-      outcomeObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting) return
-
-          outcomeCards.forEach((card, index) => {
-            animationTimers.push(
-              window.setTimeout(() => card.classList.add('is-icon-settled'), (index + 3) * 1000),
-            )
-          })
-          outcomeObserver?.disconnect()
-        },
-        { threshold: 0.12 },
-      )
-    }
-
-    if (reducedMotion) {
-      outcomeCards.forEach((card) => card.classList.add('is-icon-settled'))
-    } else if (mobileOutcomes.matches) {
-      outcomeCards.forEach((card) => outcomeObserver?.observe(card))
-    } else if (outcomeSystem) {
-      outcomeObserver?.observe(outcomeSystem)
-    }
 
     const replayIcon = (card: HTMLElement) => {
       if (!card.classList.contains('is-icon-settled')) return
@@ -356,14 +348,84 @@ export function HomePage() {
       processFrame = window.requestAnimationFrame(updateProcessProgress)
     }
 
+    let typingFrame = 0
+    let hasPlayedStatementFlair = false
+    let statementAsteriskRotationProgress = 0
+    const updateScrollTyping = () => {
+      typingFrame = 0
+      if (!typingStatement || typingCharacters.length === 0) return
+
+      if (reducedMotion) {
+        typingCharacters.forEach((character) => {
+          character.style.opacity = '1'
+        })
+        return
+      }
+
+      const statementRect = typingStatement.getBoundingClientRect()
+      const revealStart = window.innerHeight * 0.9
+      const revealDistance = window.innerHeight * 0.8
+      const progress = Math.min(
+        1,
+        Math.max(0, (revealStart - statementRect.top) / revealDistance),
+      )
+      const characterDuration = 8
+      const timelineLength = characterDuration + typingCharacters.length - 1
+      const timelinePosition = progress * timelineLength
+
+      typingCharacters.forEach((character, index) => {
+        const characterProgress = Math.min(
+          1,
+          Math.max(0, (timelinePosition - index) / characterDuration),
+        )
+        const easedProgress = 1 - (1 - characterProgress) ** 2
+        character.style.opacity = String(0.1 + easedProgress * 0.9)
+      })
+
+      if (
+        !hasPlayedStatementFlair &&
+        statementFlair &&
+        accentStartIndex >= 0 &&
+        timelinePosition >= accentStartIndex
+      ) {
+        hasPlayedStatementFlair = true
+        statementFlair.classList.add('is-animating')
+      }
+
+      if (hasPlayedStatementFlair && statementFlair && accentStartIndex >= 0) {
+        const triggerProgress = accentStartIndex / timelineLength
+        const triggerTop = revealStart - triggerProgress * revealDistance
+        const rotationDistance = window.innerHeight + statementRect.height
+        const rotationProgress = Math.min(
+          1,
+          Math.max(0, (triggerTop - statementRect.top) / rotationDistance),
+        )
+        statementAsteriskRotationProgress = Math.max(
+          statementAsteriskRotationProgress,
+          rotationProgress,
+        )
+
+        statementFlair.style.setProperty(
+          '--statement-asterisk-rotation',
+          `${statementAsteriskRotationProgress * 720}deg`,
+        )
+      }
+    }
+
+    const scheduleScrollTyping = () => {
+      if (typingFrame) return
+      typingFrame = window.requestAnimationFrame(updateScrollTyping)
+    }
+
     updateProcessProgress()
+    updateScrollTyping()
     window.addEventListener('scroll', scheduleProcessProgress, { passive: true })
     window.addEventListener('resize', scheduleProcessProgress)
+    window.addEventListener('scroll', scheduleScrollTyping, { passive: true })
+    window.addEventListener('resize', scheduleScrollTyping)
 
     return () => {
       observer?.disconnect()
-      outcomeObserver?.disconnect()
-      animationTimers.forEach((timer) => window.clearTimeout(timer))
       hoverTimers.forEach((timer) => window.clearTimeout(timer))
       replayTimers.forEach((timer) => window.clearTimeout(timer))
       outcomeCards.forEach((card) => {
@@ -372,7 +434,10 @@ export function HomePage() {
       })
       window.removeEventListener('scroll', scheduleProcessProgress)
       window.removeEventListener('resize', scheduleProcessProgress)
+      window.removeEventListener('scroll', scheduleScrollTyping)
+      window.removeEventListener('resize', scheduleScrollTyping)
       if (processFrame) window.cancelAnimationFrame(processFrame)
+      if (typingFrame) window.cancelAnimationFrame(typingFrame)
     }
   }, [])
 
@@ -388,22 +453,17 @@ export function HomePage() {
               <span>Make more.</span>
               <span>Waste less.</span>
             </h1>
-            <div className="hero__support">
-              <p className="hero__lead">
-                We find expensive problems in your business and solve them with the right technology.
-              </p>
-              <a className="text-cta text-cta--solid hero__cta" href="#contact">
-                Discuss a problem
-              </a>
-            </div>
+            <ul className="hero__tools" aria-label="Our technology capabilities">
+              {heroTools.map((tool) => (
+                <li className="hero-tool" key={tool}>
+                  <span>{tool}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="hero__lead">
+              We find expensive problems in your business and solve them with the right technology.
+            </p>
           </div>
-          <ul className="hero__tools" aria-label="Our technology capabilities">
-            {heroTools.map((tool) => (
-              <li className="hero-tool" key={tool}>
-                <span>{tool}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
@@ -471,7 +531,11 @@ export function HomePage() {
           </header>
           <div className="outcomes__system">
             {outcomes.map((outcome) => (
-              <article className={`outcome outcome--${outcome.icon}`} data-reveal key={outcome.title.join(' ')}>
+              <article
+                className={`outcome outcome--${outcome.icon} is-icon-settled`}
+                data-reveal
+                key={outcome.title.join(' ')}
+              >
                 <OutcomeIcon name={outcome.icon} />
                 <h3>
                   {outcome.title.map((line) => (
@@ -532,10 +596,64 @@ export function HomePage() {
               </article>
             ))}
           </div>
-          <p className="tools__statement" data-reveal>
-            We don&apos;t sell technology.
-            <span>We improve businesses with it.</span>
-          </p>
+          <div className="tools__statement-stage">
+            <p
+              className="tools__statement"
+              data-scroll-typing
+              aria-label="We don't sell technology. We improve businesses with it."
+            >
+              <TypingLine text="We don't sell technology." />
+              <TypingLine text="We improve businesses with it." accent />
+            </p>
+
+            <div className="tools__statement-flair" data-statement-flair aria-hidden="true">
+              <svg
+                className="tools__statement-ribbon"
+                viewBox="0 0 300 300"
+                fill="none"
+              >
+                <defs>
+                  <linearGradient id="statement-ribbon-gradient" x1="70" y1="260" x2="220" y2="70">
+                    <stop stopColor="#879be8" />
+                    <stop offset="1" stopColor="#aa8be4" />
+                  </linearGradient>
+                </defs>
+                <path
+                  pathLength="1"
+                  d="M218 78C168 101 112 137 106 197C100 254 179 278 203 229C226 181 163 148 117 175C87 193 76 225 87 254"
+                  stroke="url(#statement-ribbon-gradient)"
+                  strokeWidth="14"
+                  strokeLinecap="round"
+                />
+              </svg>
+
+              <span className="tools__statement-asterisk-shell">
+                <svg
+                  className="tools__statement-asterisk"
+                  viewBox="0 0 90 90"
+                  fill="none"
+                >
+                  <defs>
+                    <linearGradient
+                      id="statement-asterisk-gradient"
+                      x1="75"
+                      y1="-3"
+                      x2="19.0687"
+                      y2="76.6731"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stopColor="#FD9B23" />
+                      <stop offset="1" stopColor="#EB5321" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M44 0C47.3137 1.44847e-07 50 2.68629 50 6V31.5156L68.3359 13.1797C70.679 10.8371 74.4773 10.8371 76.8203 13.1797C79.1635 15.5228 79.1635 19.3219 76.8203 21.665L59.4854 39H84C87.3137 39 90 41.6863 90 45C90 48.3137 87.3137 51 84 51H58.0703L76.1123 69.042C78.4554 71.3851 78.4554 75.1842 76.1123 77.5273C73.7693 79.8699 69.971 79.8698 67.6279 77.5273L50 59.8994V84C50 87.3137 47.3137 90 44 90C40.6863 90 38 87.3137 38 84V60.4854L21.666 76.8193C19.3229 79.1625 15.5238 79.1625 13.1807 76.8193C10.8381 74.4763 10.8382 70.678 13.1807 68.335L30.5156 51H6C2.6863 51 3.57611e-06 48.3137 0 45C2.89693e-07 41.6863 2.6863 39 6 39H29.1006L12.4727 22.3721C10.1301 20.029 10.1301 16.2307 12.4727 13.8877C14.8158 11.5445 18.6149 11.5445 20.958 13.8877L38 30.9297V6C38 2.68629 40.6863 2.41719e-07 44 0Z"
+                    fill="url(#statement-asterisk-gradient)"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -555,6 +673,15 @@ export function HomePage() {
               <article
                 className="testimonial-card"
                 id={`testimonial-${index + 1}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`Center testimonial from ${testimonial.name}`}
+                onClick={() => showTestimonial(index)}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return
+                  event.preventDefault()
+                  showTestimonial(index)
+                }}
                 key={`${testimonial.name}-${index}`}
               >
                 <img
