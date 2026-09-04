@@ -350,7 +350,6 @@ export function HomePage() {
 
     let typingFrame = 0
     let hasPlayedStatementFlair = false
-    let statementAsteriskRotationProgress = 0
     const updateScrollTyping = () => {
       typingFrame = 0
       if (!typingStatement || typingCharacters.length === 0) return
@@ -400,14 +399,10 @@ export function HomePage() {
           1,
           Math.max(0, (triggerTop - statementRect.top) / rotationDistance),
         )
-        statementAsteriskRotationProgress = Math.max(
-          statementAsteriskRotationProgress,
-          rotationProgress,
-        )
 
         statementFlair.style.setProperty(
           '--statement-asterisk-rotation',
-          `${statementAsteriskRotationProgress * 720}deg`,
+          `${rotationProgress * 720}deg`,
         )
       }
     }
@@ -495,8 +490,10 @@ export function HomePage() {
             {team.map((person) => (
               <article className="team-card" data-reveal key={person.name}>
                 <img src={person.image} alt={`${person.name}, ${person.role}`} />
-                <h3>{person.name}</h3>
-                <p>{person.role}</p>
+                <div className="team-card__info">
+                  <h3>{person.name}</h3>
+                  <p>{person.role}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -614,8 +611,8 @@ export function HomePage() {
               >
                 <defs>
                   <linearGradient id="statement-ribbon-gradient" x1="70" y1="260" x2="220" y2="70">
-                    <stop stopColor="#879be8" />
-                    <stop offset="1" stopColor="#aa8be4" />
+                    <stop stopColor="#FBA844" />
+                    <stop offset="1" stopColor="#FBA844" />
                   </linearGradient>
                 </defs>
                 <path
@@ -748,10 +745,46 @@ export function HomePage() {
       <section className="section contact" id="contact" aria-labelledby="contact-title">
         <div className="contact__field" aria-hidden="true" />
         <div className="section-inner contact__inner" data-reveal>
-          <h2 id="contact-title">
-            There may be an expensive problem hiding in your operations.{' '}
-            <a href="mailto:hello@wehelp.studio">Reach us for a discussion.</a>
-          </h2>
+          <div className="contact__content">
+            <div className="contact__dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <h2 id="contact-title">
+              <span className="contact__line">There may be </span>
+              <em className="contact__line">an expensive problem </em>
+              <span className="contact__line">hiding in your operations.</span>
+              <span className="contact__cta-row">
+                <svg
+                  className="contact__arrow"
+                  viewBox="0 0 92 64"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M56.1355 1.71608C58.4059 -0.572027 62.0879 -0.572027 64.3584 1.71608L90.2972 27.8566C92.5676 30.1447 92.5676 33.8553 90.2972 36.1434L64.3584 62.2839C62.0879 64.572 58.4059 64.572 56.1355 62.2839C53.865 59.9958 53.865 56.2852 56.1355 53.997L72.1498 37.8591H5.81386C2.60295 37.8591 0 35.2359 0 32C0 28.7641 2.60295 26.1409 5.81386 26.1409H72.1498L56.1355 10.0029C53.865 7.71483 53.865 4.00419 56.1355 1.71608Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <a href="mailto:hello@wehelp.studio">
+                  <span className="contact__cta-line">Reach us</span>{' '}
+                  <span className="contact__cta-line">for a discuss</span>
+                </a>
+                <svg
+                  className="contact__asterisk"
+                  viewBox="0 0 90 90"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M44 0C47.3137 1.44847e-07 50 2.68629 50 6V31.5156L68.3359 13.1797C70.679 10.8371 74.4773 10.8371 76.8203 13.1797C79.1635 15.5228 79.1635 19.3219 76.8203 21.665L59.4854 39H84C87.3137 39 90 41.6863 90 45C90 48.3137 87.3137 51 84 51H58.0703L76.1123 69.042C78.4554 71.3851 78.4554 75.1842 76.1123 77.5273C73.7693 79.8699 69.971 79.8698 67.6279 77.5273L50 59.8994V84C50 87.3137 47.3137 90 44 90C40.6863 90 38 87.3137 38 84V60.4854L21.666 76.8193C19.3229 79.1625 15.5238 79.1625 13.1807 76.8193C10.8381 74.4763 10.8382 70.678 13.1807 68.335L30.5156 51H6C2.6863 51 3.57611e-06 48.3137 0 45C2.89693e-07 41.6863 2.6863 39 6 39H29.1006L12.4727 22.3721C10.1301 20.029 10.1301 16.2307 12.4727 13.8877C14.8158 11.5445 18.6149 11.5445 20.958 13.8877L38 30.9297V6C38 2.68629 40.6863 2.41719e-07 44 0Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </h2>
+          </div>
         </div>
       </section>
     </div>
