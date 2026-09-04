@@ -218,6 +218,9 @@ body {
 }
 
 .language-switcher__option {
+  display: grid;
+  place-items: center;
+  width: 100%;
   border: 0;
   border-radius: 0.7rem;
   background: transparent;
@@ -226,7 +229,7 @@ body {
   padding: 0.55rem 0.7rem;
   font-size: 0.78rem;
   font-weight: 650;
-  text-align: left;
+  text-align: center;
 }
 
 .language-switcher__option:hover,
