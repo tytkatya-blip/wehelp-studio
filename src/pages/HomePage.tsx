@@ -252,6 +252,9 @@ export function HomePage() {
       ? typingCharacters.indexOf(accentFirstCharacter)
       : -1
     const statementFlair = document.querySelector<HTMLElement>('[data-statement-flair]')
+    const statementAsteriskShell = statementFlair?.querySelector<HTMLElement>(
+      '.tools__statement-asterisk-shell',
+    )
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
     const observer = reducedMotion
@@ -350,6 +353,17 @@ export function HomePage() {
 
     let typingFrame = 0
     let hasPlayedStatementFlair = false
+    let isStatementAsteriskRotationEnabled = false
+    let statementAsteriskRotation = 0
+    let previousScrollY = window.scrollY
+
+    const enableStatementAsteriskRotation = (event: AnimationEvent) => {
+      if (event.animationName !== 'statement-asterisk-pop') return
+
+      isStatementAsteriskRotationEnabled = true
+      previousScrollY = window.scrollY
+    }
+
     const updateScrollTyping = () => {
       typingFrame = 0
       if (!typingStatement || typingCharacters.length === 0) return
@@ -391,18 +405,14 @@ export function HomePage() {
         statementFlair.classList.add('is-animating')
       }
 
-      if (hasPlayedStatementFlair && statementFlair && accentStartIndex >= 0) {
-        const triggerProgress = accentStartIndex / timelineLength
-        const triggerTop = revealStart - triggerProgress * revealDistance
-        const rotationDistance = window.innerHeight + statementRect.height
-        const rotationProgress = Math.min(
-          1,
-          Math.max(0, (triggerTop - statementRect.top) / rotationDistance),
-        )
+      if (isStatementAsteriskRotationEnabled && statementFlair) {
+        const scrollDelta = window.scrollY - previousScrollY
+        statementAsteriskRotation += scrollDelta * 0.6
+        previousScrollY = window.scrollY
 
         statementFlair.style.setProperty(
           '--statement-asterisk-rotation',
-          `${rotationProgress * 720}deg`,
+          `${statementAsteriskRotation}deg`,
         )
       }
     }
@@ -412,6 +422,10 @@ export function HomePage() {
       typingFrame = window.requestAnimationFrame(updateScrollTyping)
     }
 
+    statementAsteriskShell?.addEventListener(
+      'animationend',
+      enableStatementAsteriskRotation,
+    )
     updateProcessProgress()
     updateScrollTyping()
     window.addEventListener('scroll', scheduleProcessProgress, { passive: true })
@@ -427,6 +441,10 @@ export function HomePage() {
         card.removeEventListener('mouseenter', scheduleReplay)
         card.removeEventListener('mouseleave', cancelScheduledReplay)
       })
+      statementAsteriskShell?.removeEventListener(
+        'animationend',
+        enableStatementAsteriskRotation,
+      )
       window.removeEventListener('scroll', scheduleProcessProgress)
       window.removeEventListener('resize', scheduleProcessProgress)
       window.removeEventListener('scroll', scheduleScrollTyping)
