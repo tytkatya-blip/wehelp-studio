@@ -159,8 +159,8 @@ const team = [
     image: new URL('../../assets/images/team-03.webp', import.meta.url).href,
   },
   {
-    name: 'Maya Collins',
-    role: 'Design & Research',
+    name: 'Kate Tereshko',
+    role: 'Design generalist',
     image: new URL('../../assets/images/team-02.webp', import.meta.url).href,
   },
 ]
