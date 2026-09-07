@@ -380,6 +380,7 @@ body {
 .hero {
   position: relative;
   min-height: max(46rem, 100svh);
+  background: #f6ead8;
   overflow: hidden;
   isolation: isolate;
 }
@@ -396,20 +397,23 @@ body {
 .hero__field::before {
   position: absolute;
   inset: 0;
-  animation: hero-image-intro 3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: hero-image-intro 2s ease-in-out both;
   background: url('../../assets/images/hero-image.avif') center / cover no-repeat;
   content: '';
   opacity: 1;
-  transform: rotate(0deg) scale(1);
+  transform: translateY(-15%) scale(1.4);
+  transform-origin: center;
 }
 
 @keyframes hero-image-intro {
   from {
-    transform: rotate(0deg) scale(2);
+    opacity: 0;
+    transform: translateY(30%) scale(0.5);
   }
 
   to {
-    transform: rotate(0deg) scale(1);
+    opacity: 1;
+    transform: translateY(-15%) scale(1.4);
   }
 }
 
