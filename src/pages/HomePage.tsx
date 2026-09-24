@@ -217,18 +217,25 @@ export function HomePage() {
     if (!stage) return
 
     const tools = Array.from(stage.querySelectorAll<HTMLElement>('.hero-tool'))
+    const circle = stage.querySelector<HTMLElement>('.hero-motion__circle')
     const updateCircleTravel = () => {
       const gap = Number.parseFloat(
         window.getComputedStyle(stage).getPropertyValue('--hero-circle-gap'),
       )
+      const circleWidth = circle?.offsetWidth ?? 0
+      const maximumToolWidth = Math.max(0, stage.clientWidth - circleWidth * 2 - gap * 2)
+      const maximumTravel = Math.max(0, stage.clientWidth / 2 - circleWidth)
+
+      stage.style.setProperty('--hero-tool-max-width', `${maximumToolWidth}px`)
 
       tools.forEach((tool, index) => {
-        const travel = tool.offsetWidth / 2 + gap
+        const travel = Math.min(tool.offsetWidth / 2 + gap, maximumTravel)
         stage.style.setProperty(`--hero-circle-travel-${index + 1}`, `${travel}px`)
       })
     }
 
     const resizeObserver = new ResizeObserver(updateCircleTravel)
+    resizeObserver.observe(stage)
     tools.forEach((tool) => resizeObserver.observe(tool))
     updateCircleTravel()
     window.addEventListener('resize', updateCircleTravel)

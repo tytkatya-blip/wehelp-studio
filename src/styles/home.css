@@ -450,13 +450,16 @@ body {
 
 .hero__title {
   animation: hero-title-intro 2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.5s both;
-  color: #eb5321;
+  background: linear-gradient(45deg, #f0993d 0%, #eb5321 100%);
+  background-clip: text;
+  color: transparent;
   margin-bottom: clamp(3.25rem, 7vh, 5.75rem);
   font-size: clamp(5.5rem, 13.6vw, 11rem);
   font-weight: 560;
   letter-spacing: -0.082em;
   line-height: 0.9;
   text-align: center;
+  -webkit-background-clip: text;
 }
 
 .hero__title span {
@@ -536,11 +539,20 @@ body {
   background: linear-gradient(225deg, #eb5321 0%, #c11a13 100%);
 }
 
+.hero-motion__pair--right .hero-motion__circle--top {
+  background: linear-gradient(135deg, #fd9b23 0%, #eb5321 100%);
+}
+
+.hero-motion__pair--right .hero-motion__circle--bottom {
+  background: linear-gradient(135deg, #eb5321 0%, #c11a13 100%);
+}
+
 .hero-motion__tools {
   position: absolute;
   z-index: 1;
   inset: 0;
   display: grid;
+  grid-template: 1fr / minmax(0, 1fr);
   place-items: center;
   padding-inline: calc(var(--hero-circle-size) + clamp(0.8rem, 1.5vw, 1.5rem));
   list-style: none;
@@ -554,7 +566,7 @@ body {
   grid-area: 1 / 1;
   place-items: center;
   width: max-content;
-  max-width: 100%;
+  max-width: var(--hero-tool-max-width, 100%);
   min-width: clamp(10rem, 18vw, 15rem);
   min-height: clamp(4.75rem, 5.8vw, 5.75rem);
   overflow: hidden;
@@ -1968,7 +1980,7 @@ body {
 
   .hero-motion {
     --hero-circle-size: 3.5rem;
-    --hero-circle-gap: 8px;
+    --hero-circle-gap: 4px;
     height: 13.5rem;
     margin-bottom: var(--space-8);
   }
@@ -2330,10 +2342,6 @@ body {
 
   .hero__lead {
     font-size: 1.15rem;
-  }
-
-  .hero-motion {
-    --hero-circle-size: 3.1rem;
   }
 
   .contact h2 {
