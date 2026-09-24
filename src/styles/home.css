@@ -458,6 +458,7 @@ body {
   font-weight: 560;
   letter-spacing: -0.082em;
   line-height: 0.9;
+  padding-inline: 0.06em;
   text-align: center;
   -webkit-background-clip: text;
 }
@@ -604,32 +605,10 @@ body {
 .hero-tool::before {
   position: absolute;
   inset: 0;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.62);
   border-radius: inherit;
-  animation: glass-border-glint 7s linear infinite;
-  background: conic-gradient(
-      from var(--glass-angle, 0deg),
-      rgba(255, 255, 255, 0.18),
-      rgba(255, 255, 255, 0.9),
-      rgba(246, 181, 111, 0.5),
-      rgba(255, 255, 255, 0.14),
-      rgba(255, 255, 255, 0.75),
-      rgba(255, 255, 255, 0.18)
-    )
-    border-box;
   content: '';
   pointer-events: none;
-  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-.hero-tool:nth-child(2n)::before {
-  animation-delay: -2.8s;
-}
-
-.hero-tool:nth-child(3n)::before {
-  animation-delay: -4.6s;
 }
 
 .hero-tool span {
@@ -843,18 +822,6 @@ body {
     opacity: 0;
     filter: blur(6px);
     transform: translateY(-0.75rem) rotateY(82deg) scaleY(0.16);
-  }
-}
-
-@property --glass-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes glass-border-glint {
-  to {
-    --glass-angle: 360deg;
   }
 }
 
