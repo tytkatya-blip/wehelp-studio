@@ -140,10 +140,11 @@ const principles = [
 ]
 
 const heroTools = [
+  'Existing SaaS',
   'Automation & Integration',
   'AI',
-  'Product & Interface design',
   'Custom Software',
+  'Product & Interface design',
   'Backend & Data',
 ]
 
@@ -209,42 +210,7 @@ function TypingLine({ text, accent = false }: { text: string; accent?: boolean }
 
 export function HomePage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
-  const heroMotionRef = useRef<HTMLDivElement>(null)
   const testimonialTrackRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const stage = heroMotionRef.current
-    if (!stage) return
-
-    const tools = Array.from(stage.querySelectorAll<HTMLElement>('.hero-tool'))
-    const circle = stage.querySelector<HTMLElement>('.hero-motion__circle')
-    const updateCircleTravel = () => {
-      const gap = Number.parseFloat(
-        window.getComputedStyle(stage).getPropertyValue('--hero-circle-gap'),
-      )
-      const circleWidth = circle?.offsetWidth ?? 0
-      const maximumToolWidth = Math.max(0, stage.clientWidth - circleWidth * 2 - gap * 2)
-      const maximumTravel = Math.max(0, stage.clientWidth / 2 - circleWidth)
-
-      stage.style.setProperty('--hero-tool-max-width', `${maximumToolWidth}px`)
-
-      tools.forEach((tool, index) => {
-        const travel = Math.min(tool.offsetWidth / 2 + gap, maximumTravel)
-        stage.style.setProperty(`--hero-circle-travel-${index + 1}`, `${travel}px`)
-      })
-    }
-
-    const resizeObserver = new ResizeObserver(updateCircleTravel)
-    resizeObserver.observe(stage)
-    tools.forEach((tool) => resizeObserver.observe(tool))
-    updateCircleTravel()
-    window.addEventListener('resize', updateCircleTravel)
-
-    return () => {
-      resizeObserver.disconnect()
-      window.removeEventListener('resize', updateCircleTravel)
-    }
-  }, [])
 
   const showTestimonial = (index: number) => {
     const track = testimonialTrackRef.current
@@ -501,23 +467,19 @@ export function HomePage() {
               <span>Make more.</span>
               <span>Waste less.</span>
             </h1>
-            <div className="hero-motion" ref={heroMotionRef}>
-              <div className="hero-motion__circles" aria-hidden="true">
-                <div className="hero-motion__pair hero-motion__pair--left">
-                  <span className="hero-motion__circle hero-motion__circle--top" />
-                  <span className="hero-motion__circle hero-motion__circle--bottom" />
-                </div>
-                <div className="hero-motion__pair hero-motion__pair--right">
-                  <span className="hero-motion__circle hero-motion__circle--top" />
-                  <span className="hero-motion__circle hero-motion__circle--bottom" />
-                </div>
-              </div>
-              <ul className="hero-motion__tools" aria-label="Our technology capabilities">
-                {heroTools.map((tool) => (
-                  <li className="hero-tool" key={tool}>
-                    <span>{tool}</span>
-                  </li>
-                ))}
+            <div className="hero-motion">
+              <ul className="hero-motion__track" aria-label="Our technology capabilities">
+                {[0, 1, 2].flatMap((copyIndex) =>
+                  heroTools.map((tool) => (
+                    <li
+                      className="hero-tool"
+                      aria-hidden={copyIndex === 1 ? true : undefined}
+                      key={`${copyIndex}-${tool}`}
+                    >
+                      <span>{tool}</span>
+                    </li>
+                  )),
+                )}
               </ul>
             </div>
             <p className="hero__lead">
