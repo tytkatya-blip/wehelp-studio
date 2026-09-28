@@ -256,6 +256,11 @@ export function HomePage() {
     const statementAsteriskShell = statementFlair?.querySelector<HTMLElement>(
       '.tools__statement-asterisk-shell',
     )
+    const whyIntro = document.querySelector<HTMLElement>('.why__intro')
+    const whyFirstArrowLine = whyIntro?.querySelector<SVGPathElement>(
+      '.why__first-arrow-line',
+    )
+    const desktopWhyMotion = window.matchMedia('(min-width: 68.001rem)').matches
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
     const observer = reducedMotion
@@ -423,16 +428,47 @@ export function HomePage() {
       typingFrame = window.requestAnimationFrame(updateScrollTyping)
     }
 
+    let whyArrowFrame = 0
+    let whyArrowScrollStart: number | null = null
+
+    const updateWhyArrowSequence = () => {
+      whyArrowFrame = 0
+      if (!whyIntro || whyArrowScrollStart === null) return
+
+      if (window.scrollY - whyArrowScrollStart >= 120) {
+        whyIntro.classList.add('is-second-arrow-active')
+        whyArrowScrollStart = null
+      }
+    }
+
+    const scheduleWhyArrowSequence = () => {
+      if (whyArrowFrame || whyArrowScrollStart === null) return
+      whyArrowFrame = window.requestAnimationFrame(updateWhyArrowSequence)
+    }
+
+    const enableWhyArrowScrollTransition = (event: AnimationEvent) => {
+      if (event.animationName !== 'why-arrow-line-draw') return
+
+      whyArrowScrollStart = window.scrollY
+    }
+
     statementAsteriskShell?.addEventListener(
       'animationend',
       enableStatementAsteriskRotation,
     )
+    if (!reducedMotion && desktopWhyMotion) {
+      whyFirstArrowLine?.addEventListener(
+        'animationend',
+        enableWhyArrowScrollTransition,
+      )
+    }
     updateProcessProgress()
     updateScrollTyping()
     window.addEventListener('scroll', scheduleProcessProgress, { passive: true })
     window.addEventListener('resize', scheduleProcessProgress)
     window.addEventListener('scroll', scheduleScrollTyping, { passive: true })
     window.addEventListener('resize', scheduleScrollTyping)
+    window.addEventListener('scroll', scheduleWhyArrowSequence, { passive: true })
 
     return () => {
       observer?.disconnect()
@@ -446,12 +482,18 @@ export function HomePage() {
         'animationend',
         enableStatementAsteriskRotation,
       )
+      whyFirstArrowLine?.removeEventListener(
+        'animationend',
+        enableWhyArrowScrollTransition,
+      )
       window.removeEventListener('scroll', scheduleProcessProgress)
       window.removeEventListener('resize', scheduleProcessProgress)
       window.removeEventListener('scroll', scheduleScrollTyping)
       window.removeEventListener('resize', scheduleScrollTyping)
+      window.removeEventListener('scroll', scheduleWhyArrowSequence)
       if (processFrame) window.cancelAnimationFrame(processFrame)
       if (typingFrame) window.cancelAnimationFrame(typingFrame)
+      if (whyArrowFrame) window.cancelAnimationFrame(whyArrowFrame)
     }
   }, [])
 
@@ -747,7 +789,49 @@ export function HomePage() {
             <div className="section-heading">
               <p className="section-eyebrow">Why wehelp.studio</p>
               <h2 id="why-title">
-                Small team.{' '}
+                <span className="why__title-first">
+                  Small team.
+                  <svg
+                    className="why__first-arrow"
+                    width="292"
+                    height="54"
+                    viewBox="0 0 292 54"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      className="why__first-arrow-line"
+                      d="M3 51C3 24.4903 24.4903 3 51 3C75.1499 3 95.1335 20.8348 98.5 44.0518C101.866 20.8348 121.85 3 146 3C170.15 3 190.134 20.8348 193.5 44.0518C196.866 20.8348 216.85 3 241 3C267.51 3 289 20.5 289 51"
+                      pathLength="1"
+                      stroke="url(#why-first-arrow-gradient)"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      className="why__first-arrow-tip"
+                      d="M2.99902 7.3404L24.0755 23.59L40.4917 3.00043"
+                      transform="translate(264.9245 27.41)"
+                      stroke="#ED5921"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <defs>
+                      <linearGradient
+                        id="why-first-arrow-gradient"
+                        x1="126.5"
+                        y1="6"
+                        x2="161.827"
+                        y2="-42.7709"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stopColor="#FD9B23" />
+                        <stop offset="1" stopColor="#EB5321" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
                 <span>Close to the problem.</span>
                 <span>Responsible for the result.</span>
               </h2>
@@ -760,54 +844,36 @@ export function HomePage() {
               </p>
               <svg
                 className="why__arrow"
-                width="161"
-                height="170"
-                viewBox="0 0 161 170"
+                width="168"
+                height="167"
+                viewBox="0 0 168 167"
                 fill="none"
                 aria-hidden="true"
               >
                 <path
-                  className="why__arrow-shape"
-                  d="M1.76944 9.52374L0.00171961 10.4592L1.87271 13.9947L3.64043 13.0592L2.70494 11.2915L1.76944 9.52374ZM59.6594 54.1905L60.7063 55.8946L59.6594 54.1905ZM157.599 114.749L155.62 114.461L157.599 114.749ZM124.333 166.406C124.258 167.508 125.089 168.463 126.191 168.538L144.149 169.775C145.251 169.851 146.206 169.019 146.281 167.917C146.357 166.815 145.526 165.861 144.424 165.785L128.461 164.685L129.561 148.723C129.637 147.621 128.805 146.666 127.703 146.59C126.601 146.515 125.646 147.346 125.57 148.448L124.333 166.406ZM2.70494 11.2915L3.64043 13.0592C30.021 -0.901623 53.6111 2.38486 69.1413 15.3334C84.7295 28.3302 92.6088 51.3981 86.7797 77.8078L88.7327 78.2389L90.6857 78.6699C96.782 51.0494 88.6225 26.3681 71.7029 12.2612C54.7253 -1.89411 29.3388 -5.06619 1.76944 9.52374L2.70494 11.2915ZM88.7327 78.2389L86.7797 77.8078C83.8968 90.8697 77.7938 97.3524 71.4135 99.7302C64.9644 102.134 57.7071 100.549 52.1221 96.4126C46.544 92.2816 42.8802 85.7875 43.3789 78.6727C43.8748 71.5986 48.5308 63.3738 60.7063 55.8946L59.6594 54.1905L58.6126 52.4863C45.7317 60.3989 40.003 69.6298 39.3887 78.393C38.7773 87.1155 43.2778 94.8402 49.7415 99.6271C56.1982 104.409 64.86 106.441 72.8103 103.478C80.8294 100.49 87.606 92.6232 90.6857 78.6699L88.7327 78.2389ZM59.6594 54.1905L60.7063 55.8946C86.0864 40.3039 111.177 45.0038 129.298 58.5941C147.539 72.2752 158.483 94.7797 155.62 114.461L157.599 114.749L159.578 115.036C162.697 93.5979 150.838 69.7492 131.698 55.3941C112.436 40.9482 85.5667 35.9288 58.6126 52.4863L59.6594 54.1905ZM157.599 114.749L155.62 114.461C153.335 130.168 147.838 140.9 141.895 148.624C135.909 156.403 129.493 161.134 125.015 165.035L126.329 166.543L127.642 168.051C131.879 164.361 138.762 159.254 145.065 151.063C151.411 142.816 157.191 131.446 159.578 115.036L157.599 114.749Z"
-                  fill="url(#why-arrow-gradient)"
-                  mask="url(#why-arrow-reveal)"
+                  className="why__arrow-line"
+                  d="M3 8.95996C72.9182 -15.263 104.487 39.7903 89.0278 75.9074C74.536 109.764 25.7201 85.8129 59.0593 49.4086C91.273 14.2332 159.869 32.7642 163.876 91.4498C166.422 128.721 145.174 151.855 128.53 163.075"
+                  pathLength="1"
+                  stroke="url(#why-arrow-gradient)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+                <path
+                  className="why__arrow-tip"
+                  d="M4.49096 3L3 29.5715L29.2641 31.4751"
+                  transform="translate(125.53 133.5035)"
+                  stroke="#ED5921"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <defs>
-                  <mask
-                    id="why-arrow-reveal"
-                    x="-4"
-                    y="-4"
-                    width="169"
-                    height="178"
-                    maskUnits="userSpaceOnUse"
-                  >
-                    <path
-                      className="why__arrow-mask-path"
-                      d="M2.7 11.3C29 -2 53 2 70.4 14C87 27.5 94 51 88.7 78.2C85.8 91.5 79.3 99.2 72.1 102C64.8 104.7 56.9 102.5 50.9 98C44.9 93.6 40.8 86.5 41.4 78.5C42 69.8 47.5 61 59.7 54.2C85.8 39.2 111.2 44.2 130.5 57C149.5 71.2 161 94 157.6 114.7C155.2 130.8 149.4 142.3 143.5 150C137.5 157.8 130.9 162.4 126.3 166.5"
-                      pathLength="1"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="9"
-                      strokeLinecap="butt"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      className="why__arrow-mask-head"
-                      d="M126.3 166.5L144.4 167.8M126.3 166.5L127.7 148.5"
-                      pathLength="1"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="9"
-                      strokeLinecap="butt"
-                      strokeLinejoin="round"
-                    />
-                  </mask>
                   <linearGradient
                     id="why-arrow-gradient"
-                    x1="92.1912"
-                    y1="-28.1948"
-                    x2="12.2288"
-                    y2="116.248"
+                    x1="92.5076"
+                    y1="-30.4975"
+                    x2="12.5452"
+                    y2="113.945"
                     gradientUnits="userSpaceOnUse"
                   >
                     <stop stopColor="#FD9B23" />
