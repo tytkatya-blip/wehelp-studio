@@ -747,16 +747,75 @@ export function HomePage() {
             <div className="section-heading">
               <p className="section-eyebrow">Why wehelp.studio</p>
               <h2 id="why-title">
-                Small team.
+                Small team.{' '}
                 <span>Close to the problem.</span>
                 <span>Responsible for the result.</span>
               </h2>
             </div>
-            <p>
-              We work directly with the people who understand the problem and the people who will use
-              the solution. The same team can investigate the workflow, design the fix and take it into
-              production.
-            </p>
+            <div className="why__description-row">
+              <p className="why__description">
+                We work directly with the people who understand the problem and the people who will use
+                the solution. The same team can investigate the workflow, design the fix and take it into
+                production.
+              </p>
+              <svg
+                className="why__arrow"
+                width="161"
+                height="170"
+                viewBox="0 0 161 170"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  className="why__arrow-shape"
+                  d="M1.76944 9.52374L0.00171961 10.4592L1.87271 13.9947L3.64043 13.0592L2.70494 11.2915L1.76944 9.52374ZM59.6594 54.1905L60.7063 55.8946L59.6594 54.1905ZM157.599 114.749L155.62 114.461L157.599 114.749ZM124.333 166.406C124.258 167.508 125.089 168.463 126.191 168.538L144.149 169.775C145.251 169.851 146.206 169.019 146.281 167.917C146.357 166.815 145.526 165.861 144.424 165.785L128.461 164.685L129.561 148.723C129.637 147.621 128.805 146.666 127.703 146.59C126.601 146.515 125.646 147.346 125.57 148.448L124.333 166.406ZM2.70494 11.2915L3.64043 13.0592C30.021 -0.901623 53.6111 2.38486 69.1413 15.3334C84.7295 28.3302 92.6088 51.3981 86.7797 77.8078L88.7327 78.2389L90.6857 78.6699C96.782 51.0494 88.6225 26.3681 71.7029 12.2612C54.7253 -1.89411 29.3388 -5.06619 1.76944 9.52374L2.70494 11.2915ZM88.7327 78.2389L86.7797 77.8078C83.8968 90.8697 77.7938 97.3524 71.4135 99.7302C64.9644 102.134 57.7071 100.549 52.1221 96.4126C46.544 92.2816 42.8802 85.7875 43.3789 78.6727C43.8748 71.5986 48.5308 63.3738 60.7063 55.8946L59.6594 54.1905L58.6126 52.4863C45.7317 60.3989 40.003 69.6298 39.3887 78.393C38.7773 87.1155 43.2778 94.8402 49.7415 99.6271C56.1982 104.409 64.86 106.441 72.8103 103.478C80.8294 100.49 87.606 92.6232 90.6857 78.6699L88.7327 78.2389ZM59.6594 54.1905L60.7063 55.8946C86.0864 40.3039 111.177 45.0038 129.298 58.5941C147.539 72.2752 158.483 94.7797 155.62 114.461L157.599 114.749L159.578 115.036C162.697 93.5979 150.838 69.7492 131.698 55.3941C112.436 40.9482 85.5667 35.9288 58.6126 52.4863L59.6594 54.1905ZM157.599 114.749L155.62 114.461C153.335 130.168 147.838 140.9 141.895 148.624C135.909 156.403 129.493 161.134 125.015 165.035L126.329 166.543L127.642 168.051C131.879 164.361 138.762 159.254 145.065 151.063C151.411 142.816 157.191 131.446 159.578 115.036L157.599 114.749Z"
+                  fill="url(#why-arrow-gradient)"
+                  mask="url(#why-arrow-reveal)"
+                />
+                <defs>
+                  <mask
+                    id="why-arrow-reveal"
+                    x="-4"
+                    y="-4"
+                    width="169"
+                    height="178"
+                    maskUnits="userSpaceOnUse"
+                  >
+                    <path
+                      className="why__arrow-mask-path"
+                      d="M2.7 11.3C29 -2 53 2 70.4 14C87 27.5 94 51 88.7 78.2C85.8 91.5 79.3 99.2 72.1 102C64.8 104.7 56.9 102.5 50.9 98C44.9 93.6 40.8 86.5 41.4 78.5C42 69.8 47.5 61 59.7 54.2C85.8 39.2 111.2 44.2 130.5 57C149.5 71.2 161 94 157.6 114.7C155.2 130.8 149.4 142.3 143.5 150C137.5 157.8 130.9 162.4 126.3 166.5"
+                      pathLength="1"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="9"
+                      strokeLinecap="butt"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      className="why__arrow-mask-head"
+                      d="M126.3 166.5L144.4 167.8M126.3 166.5L127.7 148.5"
+                      pathLength="1"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="9"
+                      strokeLinecap="butt"
+                      strokeLinejoin="round"
+                    />
+                  </mask>
+                  <linearGradient
+                    id="why-arrow-gradient"
+                    x1="92.1912"
+                    y1="-28.1948"
+                    x2="12.2288"
+                    y2="116.248"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#FD9B23" />
+                    <stop offset="1" stopColor="#EB5321" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
           </div>
           <div className="principles">
             {principles.map(([title, body]) => (
