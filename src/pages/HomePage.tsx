@@ -170,24 +170,25 @@ const testimonials = [
   {
     quote:
       'Wehelp took the time to understand how our business actually works before proposing a solution. The process felt thoughtful, practical and focused on what would create the most value.',
-    name: 'Tim Fiebach',
-    role: 'Founder Top-IT-Service, IT-Administrator',
+    name: 'Dr. Sybil Moffatt',
+    role: 'Co-founder IAVC Animal Ghiropractic',
+    image: new URL('../../assets/images/client-Sybil.webp', import.meta.url).href,
   },
   {
     quote:
       'They translated a complicated workflow into something clear, useful and realistic. We always understood what was being built, why it mattered and what would change for the team.',
     name: 'Tim Fiebach',
     role: 'Founder Top-IT-Service, IT-Administrator',
+    image: new URL('../../assets/images/client-tim.webp', import.meta.url).href,
   },
   {
     quote:
       'The result was not technology for its own sake. It removed friction from the daily work and gave us a solution the team could confidently use from day one.',
-    name: 'Tim Fiebach',
-    role: 'Founder Top-IT-Service, IT-Administrator',
+    name: 'Dr. Donald Moffatt',
+    role: 'Co-founder IAVC Animal Ghiropractic',
+    image: new URL('../../assets/images/client-Donald.webp', import.meta.url).href,
   },
 ]
-
-const testimonialImage = new URL('../../assets/images/client-tim.webp', import.meta.url).href
 
 function TypingLine({ text, accent = false }: { text: string; accent?: boolean }) {
   return (
@@ -256,11 +257,7 @@ export function HomePage() {
     const statementAsteriskShell = statementFlair?.querySelector<HTMLElement>(
       '.tools__statement-asterisk-shell',
     )
-    const whyIntro = document.querySelector<HTMLElement>('.why__intro')
-    const whyFirstArrowLine = whyIntro?.querySelector<SVGPathElement>(
-      '.why__first-arrow-line',
-    )
-    const desktopWhyMotion = window.matchMedia('(min-width: 68.001rem)').matches
+    const whyArrow = document.querySelector<SVGSVGElement>('.why__arrow')
     const hoverTimers = new Map<HTMLElement, number>()
     const replayTimers = new Map<HTMLElement, number>()
     const observer = reducedMotion
@@ -278,6 +275,29 @@ export function HomePage() {
         )
 
     revealItems.forEach((item) => observer?.observe(item))
+
+    let whyArrowFrame = 0
+    const updateWhyArrowVisibility = () => {
+      whyArrowFrame = 0
+      if (!whyArrow || whyArrow.classList.contains('is-visible')) return
+
+      const arrowRect = whyArrow.getBoundingClientRect()
+      if (arrowRect.top <= window.innerHeight * 0.88 && arrowRect.bottom >= 0) {
+        whyArrow.classList.add('is-visible')
+      }
+    }
+
+    const scheduleWhyArrowVisibility = () => {
+      if (whyArrowFrame) return
+      whyArrowFrame = window.requestAnimationFrame(updateWhyArrowVisibility)
+    }
+
+    if (!reducedMotion && whyArrow) {
+      whyArrow.classList.add('is-motion-ready')
+      updateWhyArrowVisibility()
+      window.addEventListener('scroll', scheduleWhyArrowVisibility, { passive: true })
+      window.addEventListener('resize', scheduleWhyArrowVisibility)
+    }
 
     const replayIcon = (card: HTMLElement) => {
       if (!card.classList.contains('is-icon-settled')) return
@@ -428,47 +448,16 @@ export function HomePage() {
       typingFrame = window.requestAnimationFrame(updateScrollTyping)
     }
 
-    let whyArrowFrame = 0
-    let whyArrowScrollStart: number | null = null
-
-    const updateWhyArrowSequence = () => {
-      whyArrowFrame = 0
-      if (!whyIntro || whyArrowScrollStart === null) return
-
-      if (window.scrollY - whyArrowScrollStart >= 120) {
-        whyIntro.classList.add('is-second-arrow-active')
-        whyArrowScrollStart = null
-      }
-    }
-
-    const scheduleWhyArrowSequence = () => {
-      if (whyArrowFrame || whyArrowScrollStart === null) return
-      whyArrowFrame = window.requestAnimationFrame(updateWhyArrowSequence)
-    }
-
-    const enableWhyArrowScrollTransition = (event: AnimationEvent) => {
-      if (event.animationName !== 'why-arrow-line-draw') return
-
-      whyArrowScrollStart = window.scrollY
-    }
-
     statementAsteriskShell?.addEventListener(
       'animationend',
       enableStatementAsteriskRotation,
     )
-    if (!reducedMotion && desktopWhyMotion) {
-      whyFirstArrowLine?.addEventListener(
-        'animationend',
-        enableWhyArrowScrollTransition,
-      )
-    }
     updateProcessProgress()
     updateScrollTyping()
     window.addEventListener('scroll', scheduleProcessProgress, { passive: true })
     window.addEventListener('resize', scheduleProcessProgress)
     window.addEventListener('scroll', scheduleScrollTyping, { passive: true })
     window.addEventListener('resize', scheduleScrollTyping)
-    window.addEventListener('scroll', scheduleWhyArrowSequence, { passive: true })
 
     return () => {
       observer?.disconnect()
@@ -482,15 +471,12 @@ export function HomePage() {
         'animationend',
         enableStatementAsteriskRotation,
       )
-      whyFirstArrowLine?.removeEventListener(
-        'animationend',
-        enableWhyArrowScrollTransition,
-      )
       window.removeEventListener('scroll', scheduleProcessProgress)
       window.removeEventListener('resize', scheduleProcessProgress)
       window.removeEventListener('scroll', scheduleScrollTyping)
       window.removeEventListener('resize', scheduleScrollTyping)
-      window.removeEventListener('scroll', scheduleWhyArrowSequence)
+      window.removeEventListener('scroll', scheduleWhyArrowVisibility)
+      window.removeEventListener('resize', scheduleWhyArrowVisibility)
       if (processFrame) window.cancelAnimationFrame(processFrame)
       if (typingFrame) window.cancelAnimationFrame(typingFrame)
       if (whyArrowFrame) window.cancelAnimationFrame(whyArrowFrame)
@@ -515,19 +501,21 @@ export function HomePage() {
               We find expensive problems in your business and solve them with the right technology.
             </p>
             <div className="hero-motion">
-              <ul className="hero-motion__track" aria-label="Our technology capabilities">
-                {[0, 1, 2].flatMap((copyIndex) =>
-                  heroTools.map((tool) => (
-                    <li
-                      className="hero-tool"
-                      aria-hidden={copyIndex === 1 ? true : undefined}
-                      key={`${copyIndex}-${tool}`}
-                    >
-                      <span>{tool}</span>
-                    </li>
-                  )),
-                )}
-              </ul>
+              <div className="hero-motion__ramp">
+                <ul className="hero-motion__track" aria-label="Our technology capabilities">
+                  {[0, 1, 2].flatMap((copyIndex) =>
+                    heroTools.map((tool) => (
+                      <li
+                        className="hero-tool"
+                        aria-hidden={copyIndex === 1 ? true : undefined}
+                        key={`${copyIndex}-${tool}`}
+                      >
+                        <span>{tool}</span>
+                      </li>
+                    )),
+                  )}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -675,26 +663,6 @@ export function HomePage() {
             </p>
 
             <div className="tools__statement-flair" data-statement-flair aria-hidden="true">
-              <svg
-                className="tools__statement-ribbon"
-                viewBox="0 0 300 300"
-                fill="none"
-              >
-                <defs>
-                  <linearGradient id="statement-ribbon-gradient" x1="70" y1="260" x2="220" y2="70">
-                    <stop stopColor="#FBA844" />
-                    <stop offset="1" stopColor="#FBA844" />
-                  </linearGradient>
-                </defs>
-                <path
-                  pathLength="1"
-                  d="M218 78C168 101 112 137 106 197C100 254 179 278 203 229C226 181 163 148 117 175C87 193 76 225 87 254"
-                  stroke="url(#statement-ribbon-gradient)"
-                  strokeWidth="14"
-                  strokeLinecap="round"
-                />
-              </svg>
-
               <span className="tools__statement-asterisk-shell">
                 <svg
                   className="tools__statement-asterisk"
@@ -754,7 +722,7 @@ export function HomePage() {
               >
                 <img
                   className="testimonial-card__image"
-                  src={testimonialImage}
+                  src={testimonial.image}
                   alt={testimonial.name}
                   width="180"
                   height="180"
@@ -785,7 +753,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section why" aria-labelledby="why-title">
+      <section className="section why" id="why-wehelp" aria-labelledby="why-title">
         <div className="section-inner">
           <div className="why__intro" data-reveal>
             <div className="section-heading">
@@ -793,46 +761,6 @@ export function HomePage() {
               <h2 id="why-title">
                 <span className="why__title-first">
                   Small team.
-                  <svg
-                    className="why__first-arrow"
-                    width="292"
-                    height="54"
-                    viewBox="0 0 292 54"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      className="why__first-arrow-line"
-                      d="M3 51C3 24.4903 24.4903 3 51 3C75.1499 3 95.1335 20.8348 98.5 44.0518C101.866 20.8348 121.85 3 146 3C170.15 3 190.134 20.8348 193.5 44.0518C196.866 20.8348 216.85 3 241 3C267.51 3 289 20.5 289 51"
-                      pathLength="1"
-                      stroke="url(#why-first-arrow-gradient)"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      className="why__first-arrow-tip"
-                      d="M2.99902 7.3404L24.0755 23.59L40.4917 3.00043"
-                      transform="translate(264.9245 27.41)"
-                      stroke="#ED5921"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <defs>
-                      <linearGradient
-                        id="why-first-arrow-gradient"
-                        x1="126.5"
-                        y1="6"
-                        x2="161.827"
-                        y2="-42.7709"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#FD9B23" />
-                        <stop offset="1" stopColor="#EB5321" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
                 </span>
                 <span>Close to the problem.</span>
                 <span>Responsible for the result.</span>
@@ -897,7 +825,6 @@ export function HomePage() {
       </section>
 
       <section className="section contact" id="contact" aria-labelledby="contact-title">
-        <div className="contact__field" aria-hidden="true" />
         <div className="section-inner contact__inner" data-reveal>
           <div className="contact__content">
             <div className="contact__dots" aria-hidden="true">

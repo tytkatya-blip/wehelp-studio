@@ -389,8 +389,7 @@ body {
   isolation: isolate;
 }
 
-.hero__field,
-.contact__field {
+.hero__field {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -521,6 +520,8 @@ body {
 .hero-motion {
   --hero-marquee-gap: 16px;
   --hero-marquee-third-gap: 5.3333px;
+  --hero-marquee-move-delay: 2.55s;
+  --hero-marquee-ramp-shift: calc(2.205882% + 0.352941px);
   position: relative;
   z-index: 2;
   width: 100vw;
@@ -531,11 +532,18 @@ body {
   transform-origin: center;
 }
 
+.hero-motion__ramp {
+  width: max-content;
+  animation: hero-marquee-ramp 4.5s cubic-bezier(0.33, 0.66, 0.67, 1)
+    var(--hero-marquee-move-delay) both;
+  will-change: transform;
+}
+
 .hero-motion__track {
   display: flex;
   gap: var(--hero-marquee-gap);
   width: max-content;
-  animation: hero-marquee 34s linear infinite;
+  animation: hero-marquee 34s linear var(--hero-marquee-move-delay) infinite;
   list-style: none;
   will-change: transform;
 }
@@ -547,10 +555,10 @@ body {
   place-items: center;
   width: max-content;
   min-width: 140px;
-  height: 118px;
+  height: 104px;
   overflow: hidden;
   border: 0;
-  border-radius: 32px;
+  border-radius: 28px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow:
     inset 1px 0 0 rgba(92, 178, 255, 0.16),
@@ -559,7 +567,7 @@ body {
     inset 0 -1px 0 rgba(255, 255, 255, 0.2),
     inset 0 18px 28px -26px rgba(255, 255, 255, 0.9),
     inset 0 -18px 28px -28px rgba(112, 67, 31, 0.2);
-  padding: 0 40px;
+  padding: 0 50px;
   text-align: center;
   -webkit-backdrop-filter: blur(20px) saturate(125%) brightness(1.04);
   backdrop-filter: blur(20px) saturate(125%) brightness(1.04);
@@ -585,7 +593,7 @@ body {
 .hero-tool span {
   position: relative;
   z-index: 3;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -594,6 +602,12 @@ body {
 @keyframes hero-marquee {
   to {
     transform: translate3d(calc(-33.333333% - var(--hero-marquee-third-gap)), 0, 0);
+  }
+}
+
+@keyframes hero-marquee-ramp {
+  to {
+    transform: translate3d(var(--hero-marquee-ramp-shift), 0, 0);
   }
 }
 
@@ -1101,24 +1115,6 @@ body {
   pointer-events: none;
 }
 
-.tools__statement-ribbon {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.tools__statement-ribbon path {
-  opacity: 0;
-  stroke-dasharray: 1;
-  stroke-dashoffset: -1;
-}
-
-.tools__statement-flair.is-animating .tools__statement-ribbon path {
-  animation: statement-ribbon-draw 2.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-}
-
 .tools__statement-asterisk-shell {
   position: absolute;
   top: -3%;
@@ -1138,28 +1134,6 @@ body {
   width: 100%;
   transform: rotate(var(--statement-asterisk-rotation));
   transform-origin: center;
-}
-
-@keyframes statement-ribbon-draw {
-  0% {
-    opacity: 0;
-    stroke-dashoffset: -1;
-  }
-
-  8%,
-  62% {
-    opacity: 1;
-  }
-
-  54%,
-  68% {
-    stroke-dashoffset: 0;
-  }
-
-  100% {
-    opacity: 0;
-    stroke-dashoffset: 1;
-  }
 }
 
 @keyframes statement-asterisk-pop {
@@ -1320,45 +1294,39 @@ body {
 }
 
 .why__arrow {
-  display: none;
+  display: block;
+  justify-self: center;
+  width: 161px;
+  height: auto;
+  margin-top: clamp(2rem, 3.5vw, 4rem);
   overflow: visible;
 }
 
-.why__first-arrow {
-  display: none;
-  overflow: visible;
-}
-
-.why__first-arrow-line,
 .why__arrow-line {
-  opacity: 0;
+  opacity: 1;
   stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  stroke-dashoffset: 0;
 }
 
-.why__first-arrow-tip,
 .why__arrow-tip {
-  opacity: 0;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .why__intro.is-visible .why__first-arrow-line {
-    animation: why-arrow-line-draw 2s cubic-bezier(0.65, 0, 0.35, 1) 0.25s forwards;
+  .why__arrow.is-motion-ready:not(.is-visible) .why__arrow-line {
+    opacity: 0;
+    stroke-dashoffset: 1;
   }
 
-  .why__intro.is-visible .why__first-arrow-tip {
-    animation: why-arrow-tip-in 0.2s ease-out 2.05s forwards;
+  .why__arrow.is-motion-ready:not(.is-visible) .why__arrow-tip {
+    opacity: 0;
   }
 
-  .why__intro.is-visible.is-second-arrow-active .why__first-arrow {
-    animation: why-first-arrow-out 0.3s ease-in forwards;
-  }
-
-  .why__intro.is-visible.is-second-arrow-active .why__arrow-line {
+  .why__arrow.is-visible .why__arrow-line {
     animation: why-arrow-line-draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
   }
 
-  .why__intro.is-visible.is-second-arrow-active .why__arrow-tip {
+  .why__arrow.is-visible .why__arrow-tip {
     animation: why-arrow-tip-in 0.2s ease-out 1.2s forwards;
   }
 }
@@ -1378,12 +1346,6 @@ body {
 @keyframes why-arrow-tip-in {
   to {
     opacity: 1;
-  }
-}
-
-@keyframes why-first-arrow-out {
-  to {
-    opacity: 0;
   }
 }
 
@@ -1429,17 +1391,7 @@ body {
   }
 
   .why__intro .section-heading h2 .why__title-first {
-    display: flex;
-    align-items: center;
-    gap: clamp(2rem, 3vw, 3rem);
     white-space: nowrap;
-  }
-
-  .why__first-arrow {
-    display: block;
-    flex: none;
-    width: clamp(11rem, 17vw, 18.25rem);
-    height: auto;
   }
 
   .why__description-row {
@@ -1452,14 +1404,6 @@ body {
   .why__description {
     max-width: 47rem;
     font-size: 24px;
-  }
-
-  .why__arrow {
-    display: block;
-    justify-self: center;
-    width: 161px;
-    height: auto;
-    margin-top: clamp(2rem, 3.5vw, 4rem);
   }
 
   .principle h3 {
@@ -1487,25 +1431,9 @@ body {
   isolation: isolate;
   min-height: max(44rem, 90svh);
   overflow: hidden;
-  background: #351400;
+  background: linear-gradient(135deg, #344099 0%, #0d1e52 100%);
   color: var(--color-on-accent);
   padding-top: calc(clamp(6.5rem, 12vw, 11.5rem) - 4vw);
-}
-
-.contact__field::before {
-  position: absolute;
-  inset: -1rem;
-  background: url('../../assets/images/cta-photo.webp') center / cover no-repeat;
-  content: '';
-  filter: blur(3px);
-  transform: scale(1.025);
-}
-
-.contact__field::after {
-  position: absolute;
-  inset: 0;
-  background: rgba(53, 20, 0, 0.72);
-  content: '';
 }
 
 .contact__inner {
@@ -1727,6 +1655,11 @@ body {
     animation: none;
   }
 
+  .hero-motion__ramp {
+    animation: none;
+    transform: none;
+  }
+
   .process::after,
   .process__number {
     transition: none;
@@ -1736,10 +1669,6 @@ body {
   .outcome.is-icon-replaying .outcome-icon__dot {
     animation: none;
     transition: none;
-  }
-
-  .tools__statement-ribbon {
-    display: none;
   }
 
   .tools__statement-asterisk-shell {
@@ -1760,9 +1689,6 @@ body {
     opacity: 1;
   }
 
-  .why__first-arrow {
-    display: none;
-  }
 }
 
 @media (max-width: 68rem) {
@@ -1852,6 +1778,12 @@ body {
     overflow: visible;
     transform: none;
     translate: 0 -4px;
+  }
+
+  .hero-motion__ramp {
+    width: 100%;
+    animation: none;
+    transform: none;
   }
 
   .hero-motion__track {
