@@ -505,10 +505,15 @@ export function HomePage() {
         </div>
         <div className="section-inner hero__inner">
           <div className="hero__content">
-            <h1 id="hero-title" className="hero__title">
-              <span>Make more.</span>
-              <span>Waste less.</span>
-            </h1>
+            <div className="hero__title-reveal">
+              <h1 id="hero-title" className="hero__title">
+                <span>Make more.</span>
+                <span>Waste less.</span>
+              </h1>
+            </div>
+            <p className="hero__lead">
+              We find expensive problems in your business and solve them with the right technology.
+            </p>
             <div className="hero-motion">
               <ul className="hero-motion__track" aria-label="Our technology capabilities">
                 {[0, 1, 2].flatMap((copyIndex) =>
@@ -524,9 +529,6 @@ export function HomePage() {
                 )}
               </ul>
             </div>
-            <p className="hero__lead">
-              We find expensive problems in your business and solve them with the right technology.
-            </p>
           </div>
         </div>
       </section>

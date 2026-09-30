@@ -401,35 +401,19 @@ body {
 .hero__field::before {
   position: absolute;
   inset: 0;
-  animation: hero-image-intro 4s cubic-bezier(0.22, 1, 0.36, 1) both;
   background: url('../../assets/images/hero-image.avif') center / cover no-repeat;
   content: '';
   transform: scale(1.2);
-  transform-origin: center;
-}
-
-@keyframes hero-image-intro {
-  from {
-    opacity: 0;
-    transform: scale(1);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1.2);
-  }
 }
 
 @keyframes hero-content-intro {
   from {
     opacity: 0;
-    filter: blur(18px);
     transform: translateY(2rem);
   }
 
   to {
     opacity: 1;
-    filter: blur(0);
     transform: translateY(0);
   }
 }
@@ -451,28 +435,24 @@ body {
 @keyframes hero-tools-mobile-intro {
   from {
     opacity: 0;
-    filter: blur(12px);
-    transform: scale(0.95);
+    transform: translateY(1.5rem);
   }
 
   to {
     opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
 @keyframes hero-title-intro {
   from {
     opacity: 0;
-    filter: blur(32px);
-    transform: scale(0.9);
+    transform: translateY(2.5rem);
   }
 
   to {
     opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -496,24 +476,28 @@ body {
 
 .hero__content {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   min-width: 0;
   width: 100%;
 }
 
+.hero__title-reveal {
+  animation: hero-title-intro 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  width: 100%;
+  margin-top: clamp(5rem, 12vh, 10rem);
+}
+
 .hero__title {
-  animation: hero-title-intro 2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.5s both;
   background: linear-gradient(45deg, #f0993d 0%, #eb5321 60%);
   background-clip: text;
   color: transparent;
-  margin-bottom: 0;
-  font-size: 188px;
+  font-size: 180px;
   font-weight: 560;
   letter-spacing: -0.06em;
   line-height: 0.9;
   text-align: center;
-  translate: 0 -32px;
   -webkit-background-clip: text;
 }
 
@@ -523,15 +507,15 @@ body {
 }
 
 .hero__lead {
-  animation: hero-content-intro 0.9s cubic-bezier(0.22, 1, 0.36, 1) 2.35s both;
+  animation: hero-content-intro 1s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
   width: 100%;
-  max-width: 40rem;
-  font-size: clamp(1.3rem, 1.9vw, 1.5rem);
+  max-width: 58rem;
+  margin-top: clamp(2.5rem, 5vh, 4.5rem);
+  font-size: 32px;
   font-weight: 520;
   letter-spacing: -0.03em;
-  line-height: 1.5;
+  line-height: 1.25;
   text-align: center;
-  translate: 0 32px;
 }
 
 .hero-motion {
@@ -540,12 +524,11 @@ body {
   position: relative;
   z-index: 2;
   width: 100vw;
-  height: 90px;
-  animation: hero-marquee-intro 1.4s cubic-bezier(0.22, 1, 0.36, 1) 1.45s both;
-  margin: 0 calc(50% - 50vw) 2rem;
+  height: 118px;
+  animation: hero-marquee-intro 1s cubic-bezier(0.22, 1, 0.36, 1) 1.35s both;
+  margin: auto calc(50% - 50vw) 0;
   overflow: hidden;
   transform-origin: center;
-  translate: 0 32px;
 }
 
 .hero-motion__track {
@@ -563,10 +546,11 @@ body {
   flex: none;
   place-items: center;
   width: max-content;
-  height: 90px;
+  min-width: 140px;
+  height: 118px;
   overflow: hidden;
   border: 0;
-  border-radius: 28px;
+  border-radius: 32px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow:
     inset 1px 0 0 rgba(92, 178, 255, 0.16),
@@ -601,7 +585,7 @@ body {
 .hero-tool span {
   position: relative;
   z-index: 3;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 500;
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -1730,8 +1714,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__field::before,
-  .hero__title,
+  .hero__title-reveal,
   .hero-motion,
   .hero__lead {
     animation: none;
@@ -1784,7 +1767,7 @@ body {
 
 @media (max-width: 68rem) {
   .hero__title {
-    font-size: clamp(7rem, 17vw, 188px);
+    font-size: clamp(7rem, 17vw, 180px);
   }
 
   .home-about__intro {
@@ -1836,22 +1819,25 @@ body {
   }
 
   .hero__inner {
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding-top: 7rem;
+    min-height: 95dvh;
+    padding-top: 8rem;
     padding-bottom: 2rem;
   }
 
   .hero__title {
-    animation: hero-title-intro 0.75s cubic-bezier(0.25, 0.1, 0.25, 1) both;
     font-size: 18vw;
     line-height: 0.9;
+  }
+
+  .hero__title-reveal {
+    animation: hero-title-intro 0.75s cubic-bezier(0.25, 0.1, 0.25, 1) both;
     translate: 0 -36px;
   }
 
   .hero__lead {
     max-width: 31rem;
-    animation-delay: 1.72s;
+    animation-delay: 0.375s;
+    font-size: 1.4rem;
     translate: 0 16px;
   }
 
@@ -1860,7 +1846,7 @@ body {
     --hero-marquee-third-gap: 3.3333px;
     width: 100%;
     height: auto;
-    margin: 8px 0 var(--space-12);
+    margin: auto 0 0;
     animation: hero-tools-mobile-intro 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both;
     opacity: 1;
     overflow: visible;
@@ -1879,6 +1865,7 @@ body {
 
   .hero-tool {
     width: 100%;
+    min-width: 0;
     height: 68px;
     opacity: 1;
     border-radius: 20px;
@@ -2262,7 +2249,7 @@ body {
 }
 
 @media (max-width: 48rem) and (prefers-reduced-motion: reduce) {
-  .hero__title,
+  .hero__title-reveal,
   .hero__lead,
   .hero-motion {
     opacity: 1;
@@ -2275,10 +2262,6 @@ body {
 @media (max-width: 28rem) {
   .hero__title {
     font-size: 18vw;
-  }
-
-  .hero__lead {
-    font-size: 1.15rem;
   }
 
   .contact h2 {
