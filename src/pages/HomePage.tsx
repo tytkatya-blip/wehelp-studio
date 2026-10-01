@@ -148,6 +148,8 @@ const heroTools = [
   'Backend & Data',
 ]
 
+const heroVideo = new URL('../../assets/video/hero-scene.mp4', import.meta.url).href
+
 const team = [
   {
     name: 'Alex Morgan',
@@ -487,6 +489,9 @@ export function HomePage() {
     <div className="home">
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__field" aria-hidden="true">
+          <video className="hero__video" autoPlay muted loop playsInline preload="auto">
+            <source src={heroVideo} type="video/mp4" />
+          </video>
           <span className="hero__grain" />
         </div>
         <div className="section-inner hero__inner">
