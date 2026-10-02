@@ -148,7 +148,24 @@ const heroTools = [
   'Backend & Data',
 ]
 
-const heroVideo = new URL('../../assets/video/hero-scene.mp4', import.meta.url).href
+const heroShapes = [
+  {
+    name: 'yellow',
+    src: new URL('../../assets/images/hero-shape-yellow.svg', import.meta.url).href,
+  },
+  {
+    name: 'blue',
+    src: new URL('../../assets/images/hero-shape-blue.svg', import.meta.url).href,
+  },
+  {
+    name: 'red',
+    src: new URL('../../assets/images/hero-shape-red.svg', import.meta.url).href,
+  },
+  {
+    name: 'orange',
+    src: new URL('../../assets/images/hero-shape-orange.svg', import.meta.url).href,
+  },
+] as const
 
 const team = [
   {
@@ -489,9 +506,18 @@ export function HomePage() {
     <div className="home">
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__field" aria-hidden="true">
-          <video className="hero__video" autoPlay muted loop playsInline preload="auto">
-            <source src={heroVideo} type="video/mp4" />
-          </video>
+          <div className="hero__shapes">
+            {heroShapes.map((shape) => (
+              <img
+                className={`hero__shape hero__shape--${shape.name}`}
+                src={shape.src}
+                alt=""
+                draggable="false"
+                key={shape.name}
+              />
+            ))}
+          </div>
+          <span className="hero__glass" />
           <span className="hero__grain" />
         </div>
         <div className="section-inner hero__inner">
@@ -531,11 +557,7 @@ export function HomePage() {
           <div className="home-about__intro" data-reveal>
             <div className="section-heading">
               <p className="section-eyebrow">Who we are</p>
-              <h2 id="home-about-title">
-                We help businesses
-                <br />
-                work better.
-              </h2>
+              <h2 id="home-about-title">We help businesses</h2>
             </div>
             <div className="home-about__copy">
               <p>
@@ -544,8 +566,7 @@ export function HomePage() {
               </p>
               <p>
                 We start by understanding how the business actually works — the people, processes,
-                tools and data behind it. Then we find the problem worth solving and take the right
-                solution into production.
+                tools and data behind it.
               </p>
             </div>
           </div>

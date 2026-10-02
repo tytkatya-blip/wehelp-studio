@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1249" height="1190" viewBox="0 0 1249 1190" fill="none">
+  <g filter="url(#red-blur)">
+    <path d="M735.952 433.117C496.085 242.285 410.318 -49.0271 220.06 190.12C29.8008 429.267 70.0167 777.834 309.884 968.666C549.752 1159.5 898.438 1120.33 1088.7 881.184C1278.96 642.036 975.82 623.948 735.952 433.117Z" fill="url(#red-gradient)"/>
+  </g>
+  <defs>
+    <filter id="red-blur" x="0" y="0" width="1248.55" height="1189.65" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="50" result="redForegroundBlur"/>
+    </filter>
+    <linearGradient id="red-gradient" x1="972.69" y1="1027" x2="303.546" y2="320.927" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF5E3A"/>
+      <stop offset="1" stop-color="#FF5E3A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

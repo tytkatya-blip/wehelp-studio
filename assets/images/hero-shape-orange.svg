@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1209" height="1238" viewBox="0 0 1209 1238" fill="none">
+  <g filter="url(#orange-blur)">
+    <path d="M744.409 1122.18C466.25 1191.37 184.665 1021.97 115.472 743.816C46.2781 465.657 215.678 184.072 493.837 114.879C771.996 45.6852 1021.99 225.039 1091.19 503.197C1160.38 781.356 1022.57 1052.99 744.409 1122.18Z" fill="url(#orange-gradient)" fill-opacity="0.6"/>
+  </g>
+  <defs>
+    <filter id="orange-blur" x="0" y="0" width="1208.86" height="1237.65" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="50" result="orangeForegroundBlur"/>
+    </filter>
+    <radialGradient id="orange-gradient" cx="0" cy="0" r="1" gradientTransform="matrix(-1261.5 125.5 -181.388 -1284.28 953.687 570.197)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8C4C"/>
+      <stop offset="0.37227" stop-color="#FF8C4C"/>
+      <stop offset="1" stop-color="#F2EDE3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
