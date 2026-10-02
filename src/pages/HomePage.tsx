@@ -522,23 +522,25 @@ export function HomePage() {
         </div>
         <div className="section-inner hero__inner">
           <div className="hero__content">
-            <div className="hero__title-reveal">
-              <h1 id="hero-title" className="hero__title">
-                <span>Make more.</span>
-                <span>Waste less.</span>
-              </h1>
+            <div className="hero__copy">
+              <div className="hero__title-reveal">
+                <h1 id="hero-title" className="hero__title">
+                  <span>Make more.</span>
+                  <span>Waste less.</span>
+                </h1>
+              </div>
+              <p className="hero__lead">
+                We find expensive problems in your business and solve them with the right technology.
+              </p>
             </div>
-            <p className="hero__lead">
-              We find expensive problems in your business and solve them with the right technology.
-            </p>
             <div className="hero-motion">
               <div className="hero-motion__ramp">
                 <ul className="hero-motion__track" aria-label="Our technology capabilities">
-                  {[0, 1, 2].flatMap((copyIndex) =>
+                  {[0, 1, 2, 3].flatMap((copyIndex) =>
                     heroTools.map((tool) => (
                       <li
                         className="hero-tool"
-                        aria-hidden={copyIndex === 1 ? true : undefined}
+                        aria-hidden={copyIndex === 0 ? undefined : true}
                         key={`${copyIndex}-${tool}`}
                       >
                         <span>{tool}</span>
