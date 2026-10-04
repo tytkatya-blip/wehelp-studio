@@ -2,23 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 
 const problems = [
   {
-    title: 'Too much work is still manual.',
+    title: 'Too much work is still manual',
     body: 'Your team spends hours copying, checking, updating or chasing things that software could handle.',
   },
   {
-    title: "Your tools don't work together.",
+    title: "Your tools don't work together",
     body: 'Information lives across spreadsheets, inboxes, CRM, CMS and internal systems.',
   },
   {
-    title: 'Revenue falls through the cracks.',
+    title: 'Revenue falls through the cracks',
     body: 'Leads go cold, follow-ups get missed and existing customer data stays unused.',
   },
   {
-    title: 'You have data, but not visibility.',
+    title: 'You have data, but not visibility',
     body: 'People spend time finding out what is happening instead of acting on it.',
   },
   {
-    title: 'Growth requires more people.',
+    title: 'Growth requires more people',
     body: 'More customers or transactions create proportionally more operational work.',
   },
 ]
@@ -169,18 +169,18 @@ const heroShapes = [
 
 const team = [
   {
-    name: 'Alex Morgan',
-    role: 'Strategy & Operations',
+    name: 'Janis Straut',
+    role: 'Founder & Project Lead',
     image: new URL('../../assets/images/team-01.webp', import.meta.url).href,
   },
   {
-    name: 'Daniel Reed',
-    role: 'Product & Technology',
+    name: 'Sergei Potenko',
+    role: 'Developer',
     image: new URL('../../assets/images/team-03.webp', import.meta.url).href,
   },
   {
     name: 'Kate Tereshko',
-    role: 'Design generalist',
+    role: 'Designer',
     image: new URL('../../assets/images/team-02.webp', import.meta.url).href,
   },
 ]
@@ -591,7 +591,7 @@ export function HomePage() {
         <div className="section-inner problems__layout">
           <header className="section-heading problems__heading" data-reveal>
             <p className="section-eyebrow">Problems worth fixing</p>
-            <h2 id="problems-title">Some problems cost more than they look.</h2>
+            <h2 id="problems-title">Problems cost more than they look</h2>
           </header>
           <div className="problems__list">
             {problems.map((problem) => (
@@ -611,7 +611,7 @@ export function HomePage() {
         <div className="section-inner">
           <header className="section-heading outcomes__heading" data-reveal>
             <p className="section-eyebrow">What changes</p>
-            <h2 id="outcomes-title">Better technology should change the economics of the work.</h2>
+            <h2 id="outcomes-title">Better technology should change the economics of the work</h2>
           </header>
           <div className="outcomes__system">
             {outcomes.map((outcome) => (
@@ -642,9 +642,7 @@ export function HomePage() {
           <header className="section-heading process-section__heading" data-reveal>
             <div>
               <p className="section-eyebrow">What we do</p>
-              <h2 id="process-title">
-                We start with the problem, not the technology.
-              </h2>
+              <h2 id="process-title">We start with the problem</h2>
             </div>
           </header>
           <ol className="process">
@@ -664,12 +662,9 @@ export function HomePage() {
           <header className="section-heading tools__heading" data-reveal>
             <div>
               <p className="section-eyebrow">The right tool</p>
-              <h2 id="tools-title">
-                Sometimes the answer is custom software.
-                <span>Sometimes it isn&apos;t.</span>
-              </h2>
+              <h2 id="tools-title">Sometimes the answer is custom software</h2>
             </div>
-            <p>We use whatever solves the problem best.</p>
+            <p>Sometimes it isn&apos;t. We use whatever solves the problem best.</p>
           </header>
           <div className="capabilities">
             {capabilities.map((capability, index) => (
@@ -791,7 +786,7 @@ export function HomePage() {
                   Small team.
                 </span>
                 <span>Close to the problem.</span>
-                <span>Responsible for the result.</span>
+                <span>Responsible for the result</span>
               </h2>
             </div>
             <div className="why__description-row">
@@ -863,18 +858,22 @@ export function HomePage() {
             <h2 id="contact-title">
               <span className="contact__line">There may be </span>
               <em className="contact__line">an expensive problem </em>
-              <span className="contact__line">hiding in your operations.</span>
+              <span className="contact__line">hiding in your operations</span>
               <span className="contact__cta-row">
                 <svg
                   className="contact__arrow"
-                  viewBox="0 0 92 64"
+                  viewBox="0 0 292 64"
                   fill="none"
                   aria-hidden="true"
                 >
-                  <path
-                    d="M56.1355 1.71608C58.4059 -0.572027 62.0879 -0.572027 64.3584 1.71608L90.2972 27.8566C92.5676 30.1447 92.5676 33.8553 90.2972 36.1434L64.3584 62.2839C62.0879 64.572 58.4059 64.572 56.1355 62.2839C53.865 59.9958 53.865 56.2852 56.1355 53.997L72.1498 37.8591H5.81386C2.60295 37.8591 0 35.2359 0 32C0 28.7641 2.60295 26.1409 5.81386 26.1409H72.1498L56.1355 10.0029C53.865 7.71483 53.865 4.00419 56.1355 1.71608Z"
-                    fill="currentColor"
-                  />
+                  {[0, 100, 200].map((offset) => (
+                    <path
+                      d="M56.1355 1.71608C58.4059 -0.572027 62.0879 -0.572027 64.3584 1.71608L90.2972 27.8566C92.5676 30.1447 92.5676 33.8553 90.2972 36.1434L64.3584 62.2839C62.0879 64.572 58.4059 64.572 56.1355 62.2839C53.865 59.9958 53.865 56.2852 56.1355 53.997L72.1498 37.8591H5.81386C2.60295 37.8591 0 35.2359 0 32C0 28.7641 2.60295 26.1409 5.81386 26.1409H72.1498L56.1355 10.0029C53.865 7.71483 53.865 4.00419 56.1355 1.71608Z"
+                      fill="currentColor"
+                      key={offset}
+                      transform={`translate(${offset} 0)`}
+                    />
+                  ))}
                 </svg>
                 <a href="mailto:hello@wehelp.studio">
                   <span className="contact__cta-line">Reach us</span>{' '}

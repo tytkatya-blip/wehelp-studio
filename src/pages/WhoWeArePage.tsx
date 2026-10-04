@@ -61,7 +61,7 @@ export function WhoWeArePage() {
       <section className="section who-thinking" aria-labelledby="who-thinking-title">
         <div className="section-inner">
           <div className="who-thinking__intro" data-reveal>
-            <h2 id="who-thinking-title">Technology is a means, not the answer.</h2>
+            <h2 id="who-thinking-title">Technology is a means, not the answer</h2>
           </div>
 
           <div className="who-thinking__visual">
@@ -94,7 +94,7 @@ export function WhoWeArePage() {
       <section className="section who-work" aria-labelledby="who-work-title">
         <div className="section-inner">
           <div className="who-work__intro" data-reveal>
-            <h2 id="who-work-title">Small team. End to end.</h2>
+            <h2 id="who-work-title">Small team. End to end</h2>
             <div className="who-work__copy">
               <p className="who-work__lead">
                 We stay close to the problem from the first conversation to the working solution.

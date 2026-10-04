@@ -1,5 +1,5 @@
 :root {
-  --color-background: #f3eee4;
+  --color-background: #f7eee9;
   --color-surface: #faf7f1;
   --color-text-primary: #171714;
   --color-text-secondary: #67645d;
@@ -18,7 +18,7 @@
     "Segoe UI", sans-serif;
 
   --font-size-section-heading: clamp(3rem, 6.4vw, 6.5rem);
-  --font-size-feature-heading: clamp(2rem, 3.2vw, 3.75rem);
+  --font-size-feature-heading: clamp(2rem, 3vw, 3.75rem);
   --font-size-card-heading: clamp(1.35rem, 2vw, 2.25rem);
   --font-size-body-large: clamp(1.05rem, 1.35vw, 1.2rem);
   --font-size-body: 1rem;
