@@ -1292,7 +1292,7 @@ body {
 
 .testimonials {
   overflow: hidden;
-  background: #f7eee9;
+  background: #faf7f1;
   color: #29140f;
 }
 
@@ -1572,7 +1572,7 @@ body {
   isolation: isolate;
   min-height: max(44rem, 90svh);
   overflow: hidden;
-  background: linear-gradient(135deg, #e8ecf6 0%, #d3dbf0 100%);
+  background: linear-gradient(135deg, #eceff8 0%, #e1e6f2 100%);
   color: var(--color-text-primary);
   padding-top: calc(clamp(6.5rem, 12vw, 11.5rem) - 4vw);
 }
