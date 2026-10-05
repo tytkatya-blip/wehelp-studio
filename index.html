@@ -7,6 +7,14 @@
       name="description"
       content="We find expensive problems in businesses and solve them with the right technology."
     />
+    <script>
+      try {
+        document.documentElement.lang =
+          localStorage.getItem('wehelp-language') === 'DE' ? 'de' : 'en'
+      } catch {
+        document.documentElement.lang = 'en'
+      }
+    </script>
     <title>wehelp.studio</title>
   </head>
   <body>

@@ -1,51 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-
-const problems = [
-  {
-    title: 'Too much work is still manual',
-    body: 'Your team spends hours copying, checking, updating or chasing things that software could handle.',
-  },
-  {
-    title: "Your tools don't work together",
-    body: 'Information lives across spreadsheets, inboxes, CRM, CMS and internal systems.',
-  },
-  {
-    title: 'Revenue falls through the cracks',
-    body: 'Leads go cold, follow-ups get missed and existing customer data stays unused.',
-  },
-  {
-    title: 'You have data, but not visibility',
-    body: 'People spend time finding out what is happening instead of acting on it.',
-  },
-  {
-    title: 'Growth requires more people',
-    body: 'More customers or transactions create proportionally more operational work.',
-  },
-]
-
-const outcomes = [
-  {
-    title: ['Make', 'more'],
-    icon: 'more',
-    lines: ['More leads converted.', 'More customers reactivated.', 'Fewer opportunities lost.'],
-  },
-  {
-    title: ['Waste', 'less'],
-    icon: 'waste',
-    lines: ['Less manual work.', 'Fewer errors and duplicated tasks.', 'Lower administrative overhead.'],
-  },
-  {
-    title: ['Operate', 'better'],
-    icon: 'operate',
-    lines: [
-      'Handle more without growing the team.',
-      'Move faster.',
-      'See what is happening.',
-    ],
-  },
-]
-
-type OutcomeIconName = (typeof outcomes)[number]['icon']
+import { useLanguage } from '../i18n/useLanguage'
+import type { OutcomeIconName } from '../i18n/translations'
 
 function OutcomeIcon({ name }: { name: OutcomeIconName }) {
   if (name === 'more') {
@@ -78,76 +33,6 @@ function OutcomeIcon({ name }: { name: OutcomeIconName }) {
   )
 }
 
-const process = [
-  {
-    title: 'Understand',
-    body: 'We learn how the work actually happens — people, tools, data and constraints.',
-  },
-  {
-    title: 'Find the money',
-    body: 'We identify where revenue, time or capacity is being lost.',
-  },
-  {
-    title: 'Quantify',
-    body: 'We establish the baseline and build the business case.',
-  },
-  {
-    title: 'Design the fix',
-    body: 'We choose the simplest solution capable of creating the impact.',
-  },
-  {
-    title: 'Implement',
-    body: 'We build, configure and integrate it into the real workflow.',
-  },
-  {
-    title: 'Measure',
-    body: 'We launch with users, remove friction and measure what changed.',
-  },
-]
-
-const capabilities = [
-  {
-    title: 'AI',
-    body: 'Extraction, classification, drafting, search, copilots and decision support.',
-  },
-  {
-    title: 'Automation & integrations',
-    body: 'CRM, email, CMS, payments, forms, documents and APIs.',
-  },
-  {
-    title: 'Custom software',
-    body: 'Internal tools, portals, dashboards and workflow applications.',
-  },
-  {
-    title: 'Product & interface design',
-    body: 'Tools employees and customers can actually use.',
-  },
-  {
-    title: 'Backend & data',
-    body: 'Business logic, migrations, permissions and reliable integrations.',
-  },
-  {
-    title: 'Existing SaaS',
-    body: 'When an existing product solves the problem better, we use it.',
-  },
-]
-
-const principles = [
-  ['Business first', 'Start with impact, not technology.'],
-  ['End to end', 'From understanding the problem to production.'],
-  ['Technology agnostic', 'Build only when building makes sense.'],
-  ['Production minded', "A recommendation that never gets used isn't a solution."],
-]
-
-const heroTools = [
-  'Existing SaaS',
-  'Automation & Integration',
-  'AI',
-  'Custom Software',
-  'Product & Interface design',
-  'Backend & Data',
-]
-
 const heroShapes = [
   {
     name: 'yellow',
@@ -167,44 +52,29 @@ const heroShapes = [
   },
 ] as const
 
-const team = [
+const teamMembers = [
   {
     name: 'Janis Straut',
-    role: 'Founder & Project Lead',
     image: new URL('../../assets/images/team-01.webp', import.meta.url).href,
   },
   {
     name: 'Sergei Potenko',
-    role: 'Developer',
     image: new URL('../../assets/images/team-03.webp', import.meta.url).href,
   },
   {
     name: 'Kate Tereshko',
-    role: 'Designer',
     image: new URL('../../assets/images/team-02.webp', import.meta.url).href,
   },
 ]
 
-const testimonials = [
+const testimonialPeople = [
   {
-    quote:
-      'Wehelp took the time to understand how our business actually works before proposing a solution. The process felt thoughtful, practical and focused on what would create the most value.',
-    name: 'Dr. Sybil Moffatt',
-    role: 'Co-founder IAVC Animal Ghiropractic',
     image: new URL('../../assets/images/client-Sybil.webp', import.meta.url).href,
   },
   {
-    quote:
-      'They translated a complicated workflow into something clear, useful and realistic. We always understood what was being built, why it mattered and what would change for the team.',
-    name: 'Tim Fiebach',
-    role: 'Founder Top-IT-Service, IT-Administrator',
     image: new URL('../../assets/images/client-tim.webp', import.meta.url).href,
   },
   {
-    quote:
-      'The result was not technology for its own sake. It removed friction from the daily work and gave us a solution the team could confidently use from day one.',
-    name: 'Dr. Donald Moffatt',
-    role: 'Co-founder IAVC Animal Ghiropractic',
     image: new URL('../../assets/images/client-Donald.webp', import.meta.url).href,
   },
 ]
@@ -229,8 +99,18 @@ function TypingLine({ text, accent = false }: { text: string; accent?: boolean }
 }
 
 export function HomePage() {
+  const { language, copy } = useLanguage()
+  const { home } = copy
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const testimonialTrackRef = useRef<HTMLDivElement>(null)
+  const team = teamMembers.map((person, index) => ({
+    ...person,
+    role: home.about.teamRoles[index],
+  }))
+  const testimonials = home.testimonials.items.map((testimonial, index) => ({
+    ...testimonial,
+    image: testimonialPeople[index].image,
+  }))
 
   const showTestimonial = (index: number) => {
     const track = testimonialTrackRef.current
@@ -499,7 +379,7 @@ export function HomePage() {
       if (typingFrame) window.cancelAnimationFrame(typingFrame)
       if (whyArrowFrame) window.cancelAnimationFrame(whyArrowFrame)
     }
-  }, [])
+  }, [language])
 
   return (
     <div className="home">
@@ -524,19 +404,18 @@ export function HomePage() {
             <div className="hero__copy">
               <div className="hero__title-reveal">
                 <h1 id="hero-title" className="hero__title">
-                  <span>Make more.</span>
-                  <span>Waste less.</span>
+                  {home.hero.title.map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
                 </h1>
               </div>
-              <p className="hero__lead">
-                We find expensive problems in your business and solve them with the right technology.
-              </p>
+              <p className="hero__lead">{home.hero.lead}</p>
             </div>
             <div className="hero-motion">
               <div className="hero-motion__ramp">
-                <ul className="hero-motion__track" aria-label="Our technology capabilities">
+                <ul className="hero-motion__track" aria-label={home.hero.toolsLabel}>
                   {[0, 1, 2, 3].flatMap((copyIndex) =>
-                    heroTools.map((tool) => (
+                    home.hero.tools.map((tool) => (
                       <li
                         className="hero-tool"
                         aria-hidden={copyIndex === 0 ? undefined : true}
@@ -557,18 +436,15 @@ export function HomePage() {
         <div className="section-inner">
           <div className="home-about__intro" data-reveal>
             <div className="section-heading">
-              <p className="section-eyebrow">Who we are</p>
-              <h2 id="home-about-title">We help businesses</h2>
+              <p className="section-eyebrow">{home.about.eyebrow}</p>
+              <h2 id="home-about-title">{home.about.title}</h2>
             </div>
             <div className="home-about__copy">
               <p>
-                <strong>Wehelp.studio</strong> is a small technology &amp; operations studio. We work
-                with companies that want to make more, waste less, or operate more efficiently.
+                <strong>{home.about.firstParagraph.brand}</strong>
+                {home.about.firstParagraph.text}
               </p>
-              <p>
-                We start by understanding how the business actually works — the people, processes,
-                tools and data behind it.
-              </p>
+              <p>{home.about.secondParagraph}</p>
             </div>
           </div>
 
@@ -589,11 +465,11 @@ export function HomePage() {
       <section className="section problems" id="problems" aria-labelledby="problems-title">
         <div className="section-inner problems__layout">
           <header className="section-heading problems__heading" data-reveal>
-            <p className="section-eyebrow">Problems worth fixing</p>
-            <h2 id="problems-title">Problems cost more than they look</h2>
+            <p className="section-eyebrow">{home.problems.eyebrow}</p>
+            <h2 id="problems-title">{home.problems.title}</h2>
           </header>
           <div className="problems__list">
-            {problems.map((problem) => (
+            {home.problems.items.map((problem) => (
               <article className="problem" data-reveal key={problem.title}>
                 <span className="problem__number" aria-hidden="true" />
                 <div>
@@ -609,11 +485,11 @@ export function HomePage() {
       <section className="section outcomes" aria-labelledby="outcomes-title">
         <div className="section-inner">
           <header className="section-heading outcomes__heading" data-reveal>
-            <p className="section-eyebrow">What changes</p>
-            <h2 id="outcomes-title">Better technology should change the economics of the work</h2>
+            <p className="section-eyebrow">{home.outcomes.eyebrow}</p>
+            <h2 id="outcomes-title">{home.outcomes.title}</h2>
           </header>
           <div className="outcomes__system">
-            {outcomes.map((outcome) => (
+            {home.outcomes.items.map((outcome) => (
               <article
                 className={`outcome outcome--${outcome.icon} is-icon-settled`}
                 data-reveal
@@ -640,12 +516,12 @@ export function HomePage() {
         <div className="section-inner">
           <header className="section-heading process-section__heading" data-reveal>
             <div>
-              <p className="section-eyebrow">What we do</p>
-              <h2 id="process-title">We start with the problem</h2>
+              <p className="section-eyebrow">{home.process.eyebrow}</p>
+              <h2 id="process-title">{home.process.title}</h2>
             </div>
           </header>
           <ol className="process">
-            {process.map((step, index) => (
+            {home.process.items.map((step, index) => (
               <li className="process__step" data-reveal key={step.title}>
                 <span className="process__number">{String(index + 1).padStart(2, '0')}</span>
                 <h3>{step.title}</h3>
@@ -660,13 +536,13 @@ export function HomePage() {
         <div className="section-inner">
           <header className="section-heading tools__heading" data-reveal>
             <div>
-              <p className="section-eyebrow">The right tool</p>
-              <h2 id="tools-title">Sometimes the answer is custom software</h2>
+              <p className="section-eyebrow">{home.tools.eyebrow}</p>
+              <h2 id="tools-title">{home.tools.title}</h2>
             </div>
-            <p>Sometimes it isn&apos;t. We use whatever solves the problem best.</p>
+            <p>{home.tools.description}</p>
           </header>
           <div className="capabilities">
-            {capabilities.map((capability, index) => (
+            {home.tools.capabilities.map((capability, index) => (
               <article className="capability" data-reveal key={capability.title}>
                 <span>0{index + 1}</span>
                 <h3>{capability.title}</h3>
@@ -678,10 +554,10 @@ export function HomePage() {
             <p
               className="tools__statement"
               data-scroll-typing
-              aria-label="We don't sell technology. We improve businesses with it."
+              aria-label={home.tools.statement.join(' ')}
             >
-              <TypingLine text="We don't sell technology." />
-              <TypingLine text="We improve businesses with it." accent />
+              <TypingLine text={home.tools.statement[0]} />
+              <TypingLine text={home.tools.statement[1]} accent />
             </p>
 
             <div className="tools__statement-flair" data-statement-flair aria-hidden="true">
@@ -717,8 +593,8 @@ export function HomePage() {
 
       <section className="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
         <div className="section-inner testimonials__heading section-heading" data-reveal>
-          <p className="section-eyebrow">In their words</p>
-          <h2 id="testimonials-title">What it&apos;s like to work with us</h2>
+          <p className="section-eyebrow">{home.testimonials.eyebrow}</p>
+          <h2 id="testimonials-title">{home.testimonials.title}</h2>
         </div>
 
         <div className="testimonials__carousel" data-reveal>
@@ -733,7 +609,7 @@ export function HomePage() {
                 id={`testimonial-${index + 1}`}
                 role="button"
                 tabIndex={0}
-                aria-label={`Center testimonial from ${testimonial.name}`}
+                aria-label={home.testimonials.centerLabel(testimonial.name)}
                 onClick={() => showTestimonial(index)}
                 onKeyDown={(event) => {
                   if (event.key !== 'Enter' && event.key !== ' ') return
@@ -750,7 +626,7 @@ export function HomePage() {
                   height="180"
                 />
                 <blockquote>
-                  <p>“{testimonial.quote}”</p>
+                  <p>{testimonial.quote}</p>
                   <footer>
                     <cite>{testimonial.name}</cite>
                     <span>{testimonial.role}</span>
@@ -760,12 +636,15 @@ export function HomePage() {
             ))}
           </div>
 
-          <div className="testimonials__pagination" aria-label="Choose a testimonial">
+          <div
+            className="testimonials__pagination"
+            aria-label={home.testimonials.carouselLabel}
+          >
             {testimonials.map((testimonial, index) => (
               <button
                 type="button"
                 className={index === activeTestimonial ? 'is-active' : ''}
-                aria-label={`Show testimonial from ${testimonial.name}, slide ${index + 1}`}
+                aria-label={home.testimonials.showLabel(testimonial.name, index + 1)}
                 aria-current={index === activeTestimonial ? 'true' : undefined}
                 onClick={() => showTestimonial(index)}
                 key={index}
@@ -779,20 +658,18 @@ export function HomePage() {
         <div className="section-inner">
           <div className="why__intro" data-reveal>
             <div className="section-heading">
-              <p className="section-eyebrow">Why wehelp.studio</p>
+              <p className="section-eyebrow">{home.why.eyebrow}</p>
               <h2 id="why-title">
                 <span className="why__title-first">
-                  Small team.
+                  {home.why.title[0]}
                 </span>
-                <span>Close to the problem.</span>
-                <span>Responsible for the result</span>
+                <span>{home.why.title[1]}</span>
+                <span>{home.why.title[2]}</span>
               </h2>
             </div>
             <div className="why__description-row">
               <p className="why__description">
-                We work directly with the people who understand the problem and the people who will use
-                the solution. The same team can investigate the workflow, design the fix and take it into
-                production.
+                {home.why.body}
               </p>
               <svg
                 className="why__arrow"
@@ -836,7 +713,7 @@ export function HomePage() {
             </div>
           </div>
           <div className="principles">
-            {principles.map(([title, body]) => (
+            {home.why.principles.map(([title, body]) => (
               <article className="principle" data-reveal key={title}>
                 <h3>{title}</h3>
                 <p>{body}</p>
@@ -855,13 +732,15 @@ export function HomePage() {
               <span />
             </div>
             <h2 id="contact-title">
-              <span className="contact__line">There may be </span>
-              <em className="contact__line">an expensive problem </em>
-              <span className="contact__line">
-                hiding in your operations.
-                <br />
-                Reach us for a discuss
-              </span>
+              {home.contact.lines.map((line, index) => {
+                const Line = line.emphasis ? 'em' : 'span'
+                return (
+                  <Line className="contact__line" key={line.text}>
+                    {line.text}
+                    {index < home.contact.lines.length - 1 ? ' ' : null}
+                  </Line>
+                )
+              })}
               <span className="contact__cta-row">
                 <svg
                   className="contact__arrow"

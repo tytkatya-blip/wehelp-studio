@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLanguage } from '../i18n/useLanguage'
+import type { LanguageCode, SectionId } from '../i18n/translations'
 
 const languages = [
   {
@@ -13,32 +15,20 @@ const languages = [
   },
 ] as const
 
-type LanguageCode = (typeof languages)[number]['code']
-
-const navigationItems = [
-  { href: '/#who-we-are', sectionId: 'who-we-are', label: 'Who we are' },
-  { href: '/#problems', sectionId: 'problems', label: 'Problems' },
-  { href: '/#what-we-do', sectionId: 'what-we-do', label: 'What we do' },
-  { href: '/#tools', sectionId: 'tools', label: 'Tools' },
-  { href: '/#testimonials', sectionId: 'testimonials', label: 'Testimonials' },
-] as const
-
-type SectionId = (typeof navigationItems)[number]['sectionId']
-
 export function SiteHeader() {
+  const { language, setLanguage, copy } = useLanguage()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<SectionId | null>(null)
-  const [language, setLanguage] = useState<LanguageCode>(() => {
-    const savedLanguage = window.localStorage.getItem('wehelp-language')
-    return savedLanguage === 'DE' ? savedLanguage : 'EN'
-  })
   const closeMenu = () => setIsMenuOpen(false)
   const activeLanguage = languages.find(({ code }) => code === language) ?? languages[0]
-
-  useEffect(() => {
-    window.localStorage.setItem('wehelp-language', language)
-    document.documentElement.lang = activeLanguage.locale
-  }, [activeLanguage.locale, language])
+  const navigationItems = useMemo(
+    () =>
+      copy.header.navigation.map((item) => ({
+        ...item,
+        href: `/#${item.sectionId}`,
+      })),
+    [copy.header.navigation],
+  )
 
   useEffect(() => {
     let frame = 0
@@ -71,7 +61,7 @@ export function SiteHeader() {
       window.removeEventListener('resize', scheduleUpdate)
       if (frame) window.cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [navigationItems])
 
   const selectLanguage = (code: LanguageCode, details: HTMLDetailsElement | null) => {
     setLanguage(code)
@@ -87,7 +77,11 @@ export function SiteHeader() {
             type="button"
             aria-expanded={isMenuOpen}
             aria-controls="main-navigation"
-            aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
+            aria-label={
+              isMenuOpen
+                ? copy.accessibility.closeNavigation
+                : copy.accessibility.openNavigation
+            }
             onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
           >
             <span />
@@ -98,7 +92,7 @@ export function SiteHeader() {
           <a
             className="site-header__logo"
             href="/"
-            aria-label="wehelp.studio home"
+            aria-label={copy.accessibility.home}
             onClick={closeMenu}
           >
             wehelp.studio
@@ -108,14 +102,18 @@ export function SiteHeader() {
             <details className="language-switcher">
               <summary
                 className="language-switcher__trigger"
-                aria-label={`Language: ${activeLanguage.label}`}
+                aria-label={copy.accessibility.language(activeLanguage.label)}
               >
                 <span>{activeLanguage.code}</span>
                 <svg viewBox="0 0 12 8" aria-hidden="true">
                   <path d="m1 1.25 5 5 5-5" />
                 </svg>
               </summary>
-              <div className="language-switcher__menu" role="group" aria-label="Choose language">
+              <div
+                className="language-switcher__menu"
+                role="group"
+                aria-label={copy.accessibility.chooseLanguage}
+              >
                 {languages.map((option) => (
                   <button
                     className="language-switcher__option"
@@ -136,7 +134,7 @@ export function SiteHeader() {
             </details>
 
             <a className="site-header__cta" href="/#contact" onClick={closeMenu}>
-              Let&apos;s discuss
+              {copy.header.cta}
             </a>
           </div>
         </div>
@@ -144,7 +142,7 @@ export function SiteHeader() {
         <nav
           className={`site-header__nav${isMenuOpen ? ' site-header__nav--open' : ''}`}
           id="main-navigation"
-          aria-label="Main navigation"
+          aria-label={copy.accessibility.mainNavigation}
         >
           {navigationItems.map((item) => {
             const isActive = item.sectionId === activeSection
@@ -162,7 +160,11 @@ export function SiteHeader() {
             )
           })}
 
-          <div className="mobile-languages" role="group" aria-label="Choose language">
+          <div
+            className="mobile-languages"
+            role="group"
+            aria-label={copy.accessibility.chooseLanguage}
+          >
             {languages.map((option) => (
               <button
                 className="mobile-languages__option"

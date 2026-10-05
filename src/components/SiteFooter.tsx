@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useLanguage } from '../i18n/useLanguage'
 
 const email = 'hello@wehelp.studio'
 
 export function SiteFooter() {
+  const { copy } = useLanguage()
   const [copied, setCopied] = useState(false)
 
   const copyEmail = async () => {
@@ -25,13 +27,13 @@ export function SiteFooter() {
         </p>
 
         <span className="site-footer__terms" aria-disabled="true">
-          Terms &amp; Conditions
+          {copy.footer.terms}
         </span>
 
         <div className="site-footer__contact">
           <a href={`mailto:${email}`}>{email}</a>
           <button type="button" onClick={copyEmail} aria-live="polite">
-            {copied ? 'copied' : 'copy'}
+            {copied ? copy.footer.copied : copy.footer.copy}
           </button>
         </div>
       </div>
