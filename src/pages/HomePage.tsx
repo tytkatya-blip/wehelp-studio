@@ -440,12 +440,11 @@ export function HomePage() {
         character.style.opacity = String(0.1 + easedProgress * 0.9)
       })
 
-      if (
-        !hasPlayedStatementFlair &&
-        statementFlair &&
-        accentStartIndex >= 0 &&
-        timelinePosition >= accentStartIndex
-      ) {
+      const shouldStartStatementFlair = window.matchMedia('(min-width: 48.01rem)').matches
+        ? timelinePosition > 0
+        : accentStartIndex >= 0 && timelinePosition >= accentStartIndex
+
+      if (!hasPlayedStatementFlair && statementFlair && shouldStartStatementFlair) {
         hasPlayedStatementFlair = true
         statementFlair.classList.add('is-animating')
       }
@@ -858,7 +857,11 @@ export function HomePage() {
             <h2 id="contact-title">
               <span className="contact__line">There may be </span>
               <em className="contact__line">an expensive problem </em>
-              <span className="contact__line">hiding in your operations</span>
+              <span className="contact__line">
+                hiding in your operations.
+                <br />
+                Reach us for a discuss
+              </span>
               <span className="contact__cta-row">
                 <svg
                   className="contact__arrow"
@@ -875,9 +878,8 @@ export function HomePage() {
                     />
                   ))}
                 </svg>
-                <a href="mailto:hello@wehelp.studio">
-                  <span className="contact__cta-line">Reach us</span>{' '}
-                  <span className="contact__cta-line">for a discuss</span>
+                <a href="mailto:info@wehelp.studio">
+                  <span className="contact__cta-line">info@wehelp.studio</span>
                 </a>
                 <svg
                   className="contact__asterisk"
