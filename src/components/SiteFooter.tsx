@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useLanguage } from '../i18n/useLanguage'
 
-const email = 'hello@wehelp.studio'
+const email = 'info@wehelp.studio'
 
 export function SiteFooter() {
   const { copy } = useLanguage()

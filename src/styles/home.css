@@ -23,13 +23,12 @@ body {
 }
 
 html[lang='de'] .site-header {
-  width: min(74rem, calc(100% - 4rem));
+  width: min(70rem, calc(100% - 4rem));
 }
 
 html[lang='de'] .site-header__nav {
-  left: 50%;
   gap: clamp(0.55rem, 1vw, 1rem);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 html[lang='de'] .site-header__cta {
@@ -631,7 +630,7 @@ html[lang='de'] .site-header__cta {
   flex-shrink: 0;
   width: 100%;
   margin-top: clamp(5rem, 12vh, 10rem);
-  animation: hero-title-intro 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  animation: hero-title-intro 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
   filter: none;
   opacity: 1;
   transform: none;
@@ -1221,6 +1220,10 @@ html[lang='de'] .hero__title {
   font-size: var(--font-size-card-heading);
   font-weight: 600;
   line-height: 1;
+}
+
+html[lang='de'] .tools .capability h3 {
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
 }
 
 .capability p {
@@ -1952,7 +1955,12 @@ html[lang='de'] .contact h2 {
   }
 
   html[lang='de'] .hero__title {
-    font-size: 10vw;
+    font-size: 12vw;
+    line-height: 1;
+  }
+
+  html[lang='de'] .hero__title span:last-child {
+    white-space: normal;
   }
 
   .hero__title-reveal {
@@ -1965,6 +1973,10 @@ html[lang='de'] .contact h2 {
     margin-top: 40px;
     font-size: 1.4rem;
     translate: none;
+  }
+
+  html[lang='de'] .hero__lead {
+    font-size: 1.25rem;
   }
 
   .hero__copy {
@@ -2410,6 +2422,6 @@ html[lang='de'] .contact h2 {
   .section-heading h2,
   .why__intro h2,
   .tools__statement {
-    font-size: clamp(2.75rem, 14vw, 4rem);
+    font-size: clamp(2.75rem, 12vw, 4rem);
   }
 }
