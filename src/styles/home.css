@@ -164,6 +164,8 @@ html[lang='de'] .site-header__cta {
 
 .site-header__menu-button[aria-expanded='true'] span:nth-child(2) {
   opacity: 0;
+  transform: scaleX(0);
+  visibility: hidden;
 }
 
 .site-header__menu-button[aria-expanded='true'] span:last-child {
